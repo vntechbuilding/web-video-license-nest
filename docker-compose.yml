@@ -1,0 +1,77 @@
+version: "3.8"
+services:
+  web_video_license_postgresql:
+    container_name: web_video_license_postgresql
+    restart: always
+    image: postgres:16
+    env_file:
+      - .env
+    ports:
+      - ${POSTGRES_PORT}:5432
+    expose:
+      - ${POSTGRES_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./postgres_logs:/var/lib/postgresql/logs
+    networks:
+      - web_video_license_network
+  web_video_license_redis:
+    image: redis:7.2
+    container_name: web_video_license_redis
+    restart: always
+    ports:
+      - ${REDIS_PORT}:6379
+    expose:
+      - ${REDIS_PORT}
+    env_file:
+      - .env
+    command: >
+      --requirepass ${REDIS_PASS}
+    volumes:
+      - ./redis_data/:/data
+    networks:
+      - web_video_license_network
+  web_video_license_nginx:
+    build: ./nginx-templates
+    container_name: web_video_license_nginx
+    restart: unless-stopped
+    depends_on:
+      - web_video_license_nodejs
+    env_file:
+      - .env
+    ports:
+      - ${NGINX_PORT}:${NGINX_PORT}
+    volumes:
+      - ./nginx-log:/var/log/nginx
+      - ./nginx-templates:/etc/nginx/templates
+      - ./assets:/usr/share/nginx/html
+    networks:
+      - web_video_license_network
+  web_video_license_nodejs:
+    build: .
+    container_name: web_video_license_nodejs
+    restart: unless-stopped
+    depends_on:
+      - web_video_license_postgresql
+      - web_video_license_redis
+    env_file:
+      - .env
+    expose:
+      - ${SERVER_PORT}
+      - 5555:5555
+    volumes:
+      - ./prisma:/app/prisma
+      - ./frontend:/app/frontend
+      - .env:/app/.env
+      - ./assets:/app/assets
+      - ./dist:/app/dist
+    working_dir: /app
+    networks:
+      - web_video_license_network
+networks:
+    web_video_license_network:
+        driver: bridge
