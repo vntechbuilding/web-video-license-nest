@@ -7,22 +7,22 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from '../../middleware/guard/admin.guard';
 import { UserService } from './user.service';
-import { PageDto } from '../../middleware/dto/page.dto';
 
 import { UserCreateDto } from './dto/user.create.dto';
 import { UserChangePasswordDto } from './dto/user.change-password.dto';
 import { UserUpdateDisabledDto } from './dto/user.update-disabled.dto';
 import { UserUpdateDto } from './dto/user.update.dto';
+import { AdminV2Guard } from '../../middleware/guard/admin-v2/admin-v2.guard';
+import { PageMaxDto } from '../../middleware/dto/page-max.dto';
 
 @Controller('api/admin/user')
-@UseGuards(AdminGuard)
+@UseGuards(AdminV2Guard)
 export class UserController {
   constructor(private user: UserService) {}
 
   @Get()
-  getAllUser(@Query() query: PageDto) {
+  getAllUser(@Query() query: PageMaxDto) {
     return this.user.getAllUser(query.perPage, query.page);
   }
 

@@ -27,6 +27,10 @@ model user {
   userAuthTokenExpired   userAuthTokenExpired[]
   userAuthToken          userAuthToken[]
   userForgotPasswordCode userForgotPasswordCode[]
+  domain                 domain[]
+
+  @@index([email])
+  @@index([phone])
 }
 
 model userForgotPasswordCode {
@@ -34,7 +38,7 @@ model userForgotPasswordCode {
   createdAt DateTime @default(now())
   code      String   @unique
   userId    String
-  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([createdAt])
   @@index([code])
@@ -79,6 +83,8 @@ model admin {
   disabled              Boolean                 @default(false)
   adminAuthTokenExpired adminAuthTokenExpired[]
   adminAuthToken        adminAuthToken[]
+
+  @@index([username])
 }
 
 model adminAuthTokenExpired {
@@ -103,4 +109,123 @@ model adminAuthToken {
   @@index([id])
   @@index([refreshToken])
   @@index([adminId])
+}
+
+model domain {
+  id           String         @id @default(uuid())
+  domain       String         @unique
+  createdAt    DateTime       @default(now())
+  disabled     Boolean        @default(false)
+  userId       String
+  user         user           @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  url          url[]
+  newsCategory newsCategory[]
+  news         news[]
+  page         page[]
+  article      article[]
+
+  @@index([domain])
+  @@index([userId, domain])
+}
+
+//
+enum urlType {
+  NEWS // tin tức
+  NEWSCATEGORY // danh mục tin tức
+  PAGE // trang web
+  ARTICLE // 1 phần của trang web
+}
+
+// Đường dẫn truy cập của các domain
+model url {
+  id        String   @id @default(uuid())
+  url       String
+  type      urlType
+  createdAt DateTime @default(now())
+  disabled  Boolean  @default(false)
+  domainId  String
+  domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  refId     String // Dùng để lưu id của các bảng tương ứng type
+
+  @@unique([domainId, url])
+  @@index([domainId, url, createdAt])
+}
+
+// nested set model
+model newsCategory {
+  id          String         @id @default(uuid())
+  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  description String?
+  summary     String?
+  image       String?
+  name        String
+  createdAt   DateTime       @default(now())
+  disabled    Boolean        @default(false)
+  domainId    String
+  domain      domain         @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  rootId      String? // Danh mục root, mỗi 1 root sẽ có left bằng 1
+  parrentId   String? // Danh mục trực thuộc
+  parent      newsCategory?  @relation("newsCategoryToNewsCategory", fields: [parrentId], references: [id])
+  children    newsCategory[] @relation("newsCategoryToNewsCategory")
+  left        Int            @default(1)
+  right       Int            @default(2)
+  news        news[]
+
+  @@index([domainId, rootId, right, left]) // Tìm kiếm các danh mục con
+  @@index([domainId, parrentId])
+  // @@index([domainId, rootId]) // Tìm kiếm danh mục root với left = 1
+  @@index([domainId, code])
+}
+
+model news {
+  id          String        @id @default(uuid())
+  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  title       String
+  description String
+  summary     String
+  image       String?
+  content     String
+  createdAt   DateTime      @default(now())
+  disabled    Boolean       @default(false)
+  domainId    String
+  domain      domain        @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  rootId      String? // Nếu thuộc danh mục con thì lấy rootId của danh mục con, nếu thuộc danh mục root thì lấy id của danh mục root
+  categoryId  String?
+  category    newsCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  left        Int           @default(0) // Lấy left và right của danh mục cha
+  right       Int           @default(0)
+
+  @@index([domainId, rootId, right, left]) // Tìm kiếm các bài viết thuộc danh mục
+  // @@index([rootId])
+  @@index([domainId, code])
+  @@index([domainId, categoryId])
+}
+
+model page {
+  id          String   @id @default(uuid())
+  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  image       String?
+  title       String
+  description String
+  summary     String
+  content     String
+  createdAt   DateTime @default(now())
+  disabled    Boolean  @default(false)
+  domainId    String
+  domain      domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([domainId, code])
+}
+
+model article {
+  id        String   @id @default(uuid())
+  code      String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+  disabled  Boolean  @default(false)
+  domainId  String
+  domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([domainId, code])
 }

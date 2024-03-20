@@ -2,10 +2,12 @@
 /dist
 /node_modules
 /build
+/tmp
 
 # Logs
 logs
 *.log
+*.zip
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*

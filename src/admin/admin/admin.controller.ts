@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Post,
@@ -9,15 +8,15 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard } from '../../middleware/guard/admin.guard';
 import { AdminService } from './admin.service';
 import { PageDto } from '../../middleware/dto/page.dto';
 import { AdminCreateDto } from './dto/admin.create.dto';
 import { AdminUpdateDto } from './dto/admin.update.dto';
 import { AdminChangePasswordDto } from './dto/admin.change-password.dto';
+import { AdminV2Guard } from '../../middleware/guard/admin-v2/admin-v2.guard';
 
 @Controller('api/admin/admin')
-@UseGuards(AdminGuard)
+@UseGuards(AdminV2Guard)
 export class AdminController {
   constructor(private adminService: AdminService) {}
 

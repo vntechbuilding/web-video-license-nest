@@ -29,6 +29,7 @@ export class PrismaService extends PrismaClient {
     params?: {
       take?: number;
       skip?: number;
+      include?: any;
     },
     where?: {},
   ): Observable<{ data: [any]; count: number }> {

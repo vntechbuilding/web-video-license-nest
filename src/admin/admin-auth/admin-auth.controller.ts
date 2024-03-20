@@ -11,13 +11,13 @@ import { PrismaService } from '../../middleware/prisma/prisma.service';
 import { from, map, of, switchMap } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { hash } from 'argon2';
-import { AdminGuard } from '../../middleware/guard/admin.guard';
 import { AdminAuthService } from './admin-auth.service';
-import { AdminRefreshTokenGuard } from '../../middleware/guard/admin.refresh-token.guard';
 import { ReqParseAuthToken } from '../../middleware/decorator/req-parse-auth-token/req-parse-auth-token.decorator';
 import { ReqUser } from '../../middleware/decorator/req-user/req-user.decorator';
 import { admin } from '@prisma/client';
 import { AdminAuthLoginDto } from './dto/admin-auth-login.dto';
+import { AdminRefreshTokenV2Guard } from '../../middleware/guard/admin-refresh-token-v2/admin-refresh-token-v2.guard';
+import { AdminV2Guard } from '../../middleware/guard/admin-v2/admin-v2.guard';
 
 @Controller('api/admin/auth')
 export class AdminAuthController {
@@ -60,18 +60,18 @@ export class AdminAuthController {
       request.headers['user-agent'],
     );
   }
-  @UseGuards(AdminRefreshTokenGuard)
+  @UseGuards(AdminRefreshTokenV2Guard)
   @Get('logout')
   logout(@ReqParseAuthToken() token: string) {
     return this.authService.logout(token).pipe(map(() => true));
   }
-  @UseGuards(AdminGuard)
+  @UseGuards(AdminV2Guard)
   @Get('check-token')
   checkToken() {
     return 'true';
   }
 
-  @UseGuards(AdminRefreshTokenGuard)
+  @UseGuards(AdminRefreshTokenV2Guard)
   @Get()
   resetToken(
     @ReqUser() admin: admin,

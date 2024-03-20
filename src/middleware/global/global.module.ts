@@ -2,8 +2,6 @@ import { Global, Module } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { AdminJwtStrategy } from '../guard/admin.jwt.strategy';
-import { AdminRefreshTokenJwtStrategy } from '../guard/admin.refresh-token.jwt.strategy';
 import { ValidatorModule } from '../validator/validator.module';
 import { HttpModule } from '@nestjs/axios';
 import { SesNodemailerService } from '../services/ses-nodemailer/ses-nodemailer.service';
@@ -14,12 +12,13 @@ import { SendUserForgotPasswordConsumer } from '../../bull-consumer/send-user-fo
 import { AdminAuthService } from '../../admin/admin-auth/admin-auth.service';
 import { ApiV1AuthService } from '../../api/api-v1/api-v1-auth/api-v1-auth.service';
 import { UserService } from '../../admin/user/user.service';
+import { NewsCategoryNestedService } from '../services/news-category-nested/news-category-nested.service';
 
 export const globalConsumer = [SendUserForgotPasswordConsumer];
 export const globalServiceQueue = [UserService];
-export const globalGuard = [AdminJwtStrategy, AdminRefreshTokenJwtStrategy];
+export const globalGuard = [];
 export const globalAuthService = [ApiV1AuthService, AdminAuthService];
-export const globalService = [SesNodemailerService];
+export const globalService = [SesNodemailerService, NewsCategoryNestedService];
 @Global()
 @Module({
   providers: [
