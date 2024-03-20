@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -12,6 +13,7 @@ import { AdminDomainService } from './admin-domain.service';
 import { PageDto } from '../../middleware/dto/page.dto';
 import { AdminDomainCreateDto } from './dto/admin-domain.create.dto';
 import { AdminDomainUpdateDto } from './dto/admin-domain.update.dto';
+import { UserIdDto } from '../../middleware/dto/user-id.dto';
 
 @Controller('api/admin/domain')
 @UseGuards(AdminV2Guard)
@@ -21,6 +23,11 @@ export class AdminDomainController {
   @Get()
   getAllDomain(@Query() pageData: PageDto) {
     return this.adminDomainService.getDomain(pageData);
+  }
+
+  @Get('user/:userId')
+  getAllUserDomain(@Param() userId: UserIdDto) {
+    return this.adminDomainService.getUserDomain(userId.userId);
   }
 
   @Post()

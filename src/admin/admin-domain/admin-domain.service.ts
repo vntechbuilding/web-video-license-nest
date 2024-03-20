@@ -25,6 +25,14 @@ export class AdminDomainService {
     // });
   }
 
+  getUserDomain(userId: string) {
+    return this.prisma.domain.findMany({
+      where: {
+        userId,
+      },
+    });
+  }
+
   createDomain(createData: AdminDomainCreateDto) {
     return this.prisma.domain.create({
       data: createData,

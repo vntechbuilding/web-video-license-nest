@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { newsCategory } from '@prisma/client';
-import { from, of, switchMap, zip } from 'rxjs';
+import { from, of, switchMap, tap, zip } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class NewsCategoryNestedService {
@@ -23,8 +24,13 @@ export class NewsCategoryNestedService {
               where: {
                 domainId: newsCategory.domainId,
                 rootId: newsCategory.rootId || newsCategory.id,
-                left: { gte: newsCategory.left },
-                right: { lte: newsCategory.right },
+                left: { gt: newsCategory.left },
+                right: { lt: newsCategory.right },
+              },
+            }),
+            this.prisma.newsCategory.delete({
+              where: {
+                id: newsCategory.id,
               },
             }),
             this.prisma.news.updateMany({
@@ -46,20 +52,34 @@ export class NewsCategoryNestedService {
               if (newsCategory.rootId) {
                 const updateRange = newsCategory.right - newsCategory.left + 1;
                 return zip(
+                  //TODO lỗi ở đây, cần chỉnh lại cập nhật left bị sai
                   this.prisma.newsCategory.updateMany({
                     where: {
                       domainId: newsCategory.domainId,
                       rootId: newsCategory.rootId,
                       left: { gt: newsCategory.right },
+                      right: { gt: newsCategory.right },
                     },
                     data: {
                       left: { decrement: updateRange },
                       right: { decrement: updateRange },
                     },
                   }),
-                  this.prisma.newsCategory.update({
+                  this.prisma.newsCategory.updateMany({
                     where: {
-                      id: newsCategory.parrentId,
+                      domainId: newsCategory.domainId,
+                      rootId: newsCategory.rootId,
+                      left: { lt: newsCategory.left },
+                      right: { gt: newsCategory.right },
+                    },
+                    data: {
+                      // left: { decrement: updateRange },
+                      right: { decrement: updateRange },
+                    },
+                  }),
+                  this.prisma.newsCategory.updateMany({
+                    where: {
+                      id: newsCategory.rootId || Math.random().toString(),
                     },
                     data: {
                       right: { decrement: updateRange },
@@ -70,6 +90,7 @@ export class NewsCategoryNestedService {
                       domainId: newsCategory.domainId,
                       rootId: newsCategory.rootId,
                       left: { gt: newsCategory.right },
+                      right: { gt: newsCategory.right },
                     },
                     data: {
                       left: { decrement: updateRange },
@@ -79,7 +100,19 @@ export class NewsCategoryNestedService {
                   this.prisma.news.updateMany({
                     where: {
                       domainId: newsCategory.domainId,
-                      categoryId: newsCategory.parrentId,
+                      rootId: newsCategory.rootId,
+                      left: { lt: newsCategory.left },
+                      right: { gt: newsCategory.right },
+                    },
+                    data: {
+                      right: { decrement: updateRange },
+                    },
+                  }),
+                  this.prisma.news.updateMany({
+                    where: {
+                      domainId: newsCategory.domainId,
+                      categoryId:
+                        newsCategory.rootId || Math.random().toString(),
                     },
                     data: {
                       right: { decrement: updateRange },
@@ -102,52 +135,118 @@ export class NewsCategoryNestedService {
         this.prisma.newsCategory.updateMany({
           where: {
             domainId: category.domainId,
-            rootId: category.rootId || category.id,
-            left: { gte: category.parent.right },
+            rootId:
+              category.parent.rootId ||
+              category.parent.id ||
+              Math.random().toString(),
+            // right: { lt: category.parent.right },
+            left: { gt: category.parent.left }, //Có left lớn hơn parent.left
           },
           data: {
             left: { increment: 2 },
             right: { increment: 2 },
           },
         }),
+        this.prisma.newsCategory.updateMany({
+          where: {
+            domainId: category.domainId,
+            rootId:
+              category.parent.rootId ||
+              category.parent.id ||
+              Math.random().toString(),
+            // right: { lt: category.parent.right },
+            right: { gt: category.parent.right }, //Có right lớn hơn parent.right
+            left: { lt: category.parent.left }, //Và left nhỏ hơn parent.left
+            id: {
+              not: category.parentId,
+            },
+          },
+          data: {
+            right: { increment: 2 },
+          },
+        }),
         this.prisma.news.updateMany({
           where: {
             domainId: category.domainId,
-            rootId: category.rootId || category.id,
-            left: { gte: category.parent.right },
+            rootId:
+              category.parent.rootId ||
+              category.parent.id ||
+              Math.random().toString(),
+            right: { gt: category.parent.right },
+            categoryId: {
+              not: category.parentId,
+            },
+          },
+          data: {
+            right: { increment: 2 },
+          },
+        }),
+        this.prisma.news.updateMany({
+          where: {
+            domainId: category.domainId,
+            rootId:
+              category.parent.rootId ||
+              category.parent.id ||
+              Math.random().toString(),
+            left: { gt: category.parent.left },
           },
           data: {
             left: { increment: 2 },
             right: { increment: 2 },
           },
         }),
-        this.prisma.newsCategory.update({
-          where: {
-            id: category.parrentId,
-          },
-          data: {
-            right: { increment: 2 },
-          },
-        }),
-        this.prisma.news.updateMany({
-          where: {
-            domainId: category.domainId,
-            categoryId: category.parrentId,
-          },
-          data: {
-            right: { increment: 2 },
-          },
-        }),
-        this.prisma.newsCategory.update({
-          where: {
-            id: category.id,
-          },
-          data: {
-            left: category.parent.left + 1,
-            right: category.parent.left + 2,
-          },
-        }),
-      );
+      )
+        .pipe(
+          // tap((data) => console.log(data)),
+          switchMap(() =>
+            zip(
+              this.prisma.newsCategory.update({
+                //Done
+                where: {
+                  id: category.parentId,
+                },
+                data: {
+                  right: { increment: 2 },
+                },
+              }),
+              this.prisma.news.updateMany({
+                where: {
+                  domainId: category.domainId,
+                  categoryId: category.parentId,
+                },
+                data: {
+                  right: { increment: 2 },
+                },
+              }),
+            ),
+          ),
+          switchMap(() => {
+            if (category.parent.rootId)
+              return this.prisma.newsCategory.updateMany({
+                where: {
+                  id: category.parent.rootId,
+                },
+                data: {
+                  right: { increment: 2 },
+                },
+              });
+            return of(category);
+          }),
+        )
+        .pipe(
+          map(() =>
+            this.prisma.newsCategory.update({
+              where: {
+                id: category.id,
+              },
+              data: {
+                left: category.parent.left + 1,
+                right: category.parent.left + 2,
+                rootId: category.parent.rootId || category.parent.id,
+              },
+            }),
+          ),
+        );
     }
     return of(category);
   }
