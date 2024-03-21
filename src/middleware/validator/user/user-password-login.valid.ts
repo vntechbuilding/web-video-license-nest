@@ -53,7 +53,7 @@ export class UserPasswordLoginValidConstraint
 }
 
 export function UserPasswordLoginValid(validationOptions?: ValidationOptions) {
-  return (object: Object, propertyName: string) => {
+  return (object: NonNullable<unknown>, propertyName: string) => {
     registerDecorator({
       name: 'UserPasswordLoginValid',
       target: object.constructor,

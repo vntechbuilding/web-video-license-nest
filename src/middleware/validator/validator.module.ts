@@ -6,6 +6,7 @@ import { UserPasswordLoginValidConstraint } from './user/user-password-login.val
 import { RecaptchaValidConstraint } from './recaptcha-valid';
 import { HttpModule } from '@nestjs/axios';
 import { UserCurrentPasswordValidConstraint } from './user/user-current-password.valid';
+import { NewsCategoryParentIdValidConstraint } from './news-category/news-category-parent-id.valid';
 
 @Module({
   imports: [HttpModule],
@@ -13,6 +14,7 @@ import { UserCurrentPasswordValidConstraint } from './user/user-current-password
     AdminPasswordLoginValidConstraint,
     UserPasswordLoginValidConstraint,
     UserCurrentPasswordValidConstraint,
+    NewsCategoryParentIdValidConstraint,
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,
@@ -21,6 +23,7 @@ import { UserCurrentPasswordValidConstraint } from './user/user-current-password
     AdminPasswordLoginValidConstraint,
     UserPasswordLoginValidConstraint,
     UserCurrentPasswordValidConstraint,
+    NewsCategoryParentIdValidConstraint,
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,

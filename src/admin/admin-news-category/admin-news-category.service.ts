@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../middleware/prisma/prisma.service';
-import { from, switchMap } from 'rxjs';
+import { from, switchMap, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { newsCategory } from '@prisma/client';
-import { clone } from 'lodash';
+import { clone, omit } from 'lodash';
 import { AdminNewsCategoryCreateDto } from './dto/admin-news-category.create.dto';
 import { NewsCategoryNestedService } from '../../middleware/services/news-category-nested/news-category-nested.service';
+import { AdminNewsCategoryUpdateDto } from './dto/admin-news-category.update.dto';
 
 @Injectable()
 export class AdminNewsCategoryService {
@@ -17,7 +18,11 @@ export class AdminNewsCategoryService {
     return from(
       this.prisma.newsCategory.findMany({
         include: {
-          domain: true,
+          domain: {
+            include: {
+              user: true,
+            },
+          },
         },
       }),
     ).pipe(
@@ -36,7 +41,11 @@ export class AdminNewsCategoryService {
           domainId: domainId,
         },
         include: {
-          domain: true,
+          domain: {
+            include: {
+              user: true,
+            },
+          },
         },
       }),
     ).pipe(
@@ -59,6 +68,31 @@ export class AdminNewsCategoryService {
     return rs;
   }
 
+  updateNewsCategory(updateData: AdminNewsCategoryUpdateDto) {
+    return from(
+      this.prisma.newsCategory.update({
+        where: {
+          id: updateData.categoryId,
+        },
+        include: {
+          parent: true,
+        },
+        data: omit(updateData, 'categoryId', 'parentId'),
+      }),
+    ).pipe(
+      switchMap((newsCategory) =>
+        zip(
+          this.newsCategoryNested.updateCategory(newsCategory, updateData),
+          this.prisma.updateUrl(
+            'newsCategory',
+            newsCategory.id,
+            'NEWSCATEGORY',
+          ),
+        ),
+      ),
+    );
+  }
+
   createNewsCategory(createData: AdminNewsCategoryCreateDto) {
     return from(
       this.prisma.newsCategory.create({
@@ -69,7 +103,14 @@ export class AdminNewsCategoryService {
       }),
     ).pipe(
       switchMap((newsCategory) =>
-        this.newsCategoryNested.createCategory(newsCategory),
+        zip(
+          this.newsCategoryNested.createCategory(newsCategory),
+          this.prisma.updateUrl(
+            'newsCategory',
+            newsCategory.id,
+            'NEWSCATEGORY',
+          ),
+        ),
       ),
     );
   }

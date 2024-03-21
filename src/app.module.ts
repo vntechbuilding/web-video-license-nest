@@ -7,6 +7,7 @@ import { findRootDir } from './utils/find-root-dir';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { NewsCategoryNestedService } from './middleware/services/news-category-nested/news-category-nested.service';
+import { SystemUrlService } from './middleware/services/system-url/system-url.service';
 
 @Module({
   imports: [
@@ -22,6 +23,6 @@ import { NewsCategoryNestedService } from './middleware/services/news-category-n
     AdminModule,
   ],
   controllers: [],
-  providers: [NewsCategoryNestedService],
+  providers: [NewsCategoryNestedService, SystemUrlService],
 })
 export class AppModule {}

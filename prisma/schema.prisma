@@ -154,12 +154,12 @@ model url {
 // nested set model
 model newsCategory {
   id          String         @id @default(uuid())
-  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
   url         String? // Đường dẫn truy cập
   description String?
   summary     String?
   image       String?
-  name        String
+  title       String?
   createdAt   DateTime       @default(now())
   disabled    Boolean        @default(false)
   domainId    String
@@ -172,16 +172,16 @@ model newsCategory {
   right       Int            @default(2)
   news        news[]
 
+  // @@index([domainId, rootId]) // Tìm kiếm danh mục root với left = 1
   @@index([domainId, rootId, right, left]) // Tìm kiếm các danh mục con
   @@index([domainId, parentId])
-  // @@index([domainId, rootId]) // Tìm kiếm danh mục root với left = 1
-  @@index([domainId, code])
 }
 
 model news {
   id          String        @id @default(uuid())
-  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
   title       String
+  url         String? // Đường dẫn truy cập
   description String
   summary     String
   image       String?
@@ -198,14 +198,14 @@ model news {
 
   @@index([domainId, rootId, right, left]) // Tìm kiếm các bài viết thuộc danh mục
   // @@index([rootId])
-  @@index([domainId, code])
   @@index([domainId, categoryId])
 }
 
 model page {
   id          String   @id @default(uuid())
-  code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
   image       String?
+  url         String? // Đường dẫn truy cập
   title       String
   description String
   summary     String
@@ -215,18 +215,19 @@ model page {
   domainId    String
   domain      domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-  @@index([domainId, code])
+  @@index([domainId])
 }
 
 model article {
   id        String   @id @default(uuid())
-  code      String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
+  // code      String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
   title     String
+  url       String? // Đường dẫn truy cập
   content   String
   createdAt DateTime @default(now())
   disabled  Boolean  @default(false)
   domainId  String
   domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-  @@index([domainId, code])
+  @@index([domainId])
 }
