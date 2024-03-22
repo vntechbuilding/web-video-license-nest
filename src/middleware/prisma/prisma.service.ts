@@ -26,12 +26,11 @@ export class PrismaService extends PrismaClient {
     // });
   }
 
-  deleteUrl<T extends ModelNameType>(data: any, type: urlType) {
-    if (!data) return;
+  deleteUrl(data: { domainId: string; refId: string }) {
     return this.url.deleteMany({
       where: {
         domainId: data.domainId,
-        refId: data.id,
+        refId: data.refId,
       },
     });
   }
@@ -135,4 +134,6 @@ export class PrismaService extends PrismaClient {
       ]),
     ).pipe(map(([data, count]) => ({ data, count })));
   }
+
+  defaultManyAndCountResult = { data: [], count: 0 };
 }

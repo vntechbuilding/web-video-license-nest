@@ -40,6 +40,14 @@ export class NewsCategoryNestedService {
             .pipe(
               tap((listCategory) => {
                 const ids = listCategory.map((category) => category.id);
+                (async () => {
+                  for (const id of ids) {
+                    await this.prisma.deleteUrl({
+                      domainId: newsCategory.domainId,
+                      refId: id,
+                    });
+                  }
+                })();
                 const metaImage = listCategory
                   .map((category) => category.metaImage)
                   .filter((img) => img);

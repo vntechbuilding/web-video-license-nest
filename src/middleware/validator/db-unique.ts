@@ -15,9 +15,10 @@ export class DBUniqueConstraint implements ValidatorConstraintInterface {
   constructor(private prisma: PrismaService) {}
 
   async validate(value: any, validationArguments: ValidationArguments) {
+    if (!value) return false;
     const [model, propertyName, idData, isNew] =
       validationArguments.constraints;
-    // console.log({ model, propertyName, idData, isNew });
+    // console.log('DBUniqueConstraint', { model, propertyName, idData, isNew });
     const checkModel = this.prisma[model] as any;
     if (checkModel) {
       // if (!isNew && idData) {

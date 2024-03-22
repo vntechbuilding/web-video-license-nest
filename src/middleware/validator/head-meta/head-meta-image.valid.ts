@@ -25,10 +25,14 @@ export class HeadMetaImageValidConstraint
 {
   constructor(private prisma: PrismaService) {}
   async validate(image: string, args: ValidationArguments) {
-    if (!image) return true;
+    const [model, idProperty, imageCol] = args.constraints;
+    // console.log(imageCol, args.object);
+    if (!image) {
+      delete (args.object as any)[imageCol];
+      return true;
+    }
     const isValid = await Base64PngValid(image);
     if (!isValid.isValid) return false;
-    const [model, idProperty, imageCol] = args.constraints;
     const idData = (args.object as any)[idProperty];
     let removeFile: any = false;
     let removeThumbnailFile: any = false;
@@ -86,6 +90,16 @@ export class HeadMetaImageValidConstraint
     );
   }
 }
+
+/**
+ * Cắt hình ảnh theo tỷ lệ 16:9
+ * 1200x675
+ * @param model
+ * @param idProperty
+ * @param imageCol
+ * @param validationOptions
+ * @constructor
+ */
 export function HeadMetaImageValid<T extends ModelNameType>(
   model: T,
   idProperty: string,

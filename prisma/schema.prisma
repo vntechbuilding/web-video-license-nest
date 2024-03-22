@@ -284,8 +284,8 @@ model news {
   metaDescription String?
   metaTitle       String?
   metaImage       String?
-  ratingValue     Int           @default(0)
-  bestRating      Int           @default(0)
+  ratingValue     Float         @default(0)
+  bestRating      Int           @default(5)
   ratingCount     Int           @default(0)
   totalRead       Int           @default(0)
   videoId         String?
@@ -298,6 +298,7 @@ model news {
   image           String?
   content         String
   createdAt       DateTime      @default(now())
+  uploadDate      DateTime      @default(now())
   disabled        Boolean       @default(false)
   domainId        String
   domain          domain        @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
@@ -307,7 +308,7 @@ model news {
   left            Int           @default(0) // Lấy left và right của danh mục cha
   right           Int           @default(0)
 
-  @@index([domainId, rootId, right, left]) // Tìm kiếm các bài viết thuộc danh mục
+  @@index([domainId, rootId, right, left, createdAt]) // Tìm kiếm các bài viết thuộc danh mục
   // @@index([rootId])
   @@index([domainId, categoryId])
 }
@@ -321,10 +322,11 @@ model page {
   metaDescription String?
   metaTitle       String?
   metaImage       String?
-  ratingValue     Int        @default(0)
-  bestRating      Int        @default(0)
+  ratingValue     Float      @default(0)
+  bestRating      Int        @default(5)
   ratingCount     Int        @default(0)
   totalRead       Int        @default(0)
+  uploadDate      DateTime   @default(now())
   videoId         String?
   video           video?     @relation(fields: [videoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   authorId        String?

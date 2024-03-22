@@ -14,6 +14,7 @@ import { ContentImageValidConstraint } from './content-image.valid';
 import { IsIso8601Constraint } from './is-iso-8601.validator';
 import { IsRfc2822Constraint } from './is-rfc-2822.validator';
 import { IsIso8601DurationConstraint } from './is-iso-8601-duration.validator';
+import { NewsCategoryDomainIdValidConstraint } from './news-category/news-category-domain-id.valid.dto';
 
 @Module({
   imports: [HttpModule],
@@ -32,6 +33,7 @@ import { IsIso8601DurationConstraint } from './is-iso-8601-duration.validator';
     IsIso8601Constraint,
     IsRfc2822Constraint,
     IsIso8601DurationConstraint,
+    NewsCategoryDomainIdValidConstraint,
   ],
   exports: [
     AdminPasswordLoginValidConstraint,
@@ -48,6 +50,7 @@ import { IsIso8601DurationConstraint } from './is-iso-8601-duration.validator';
     IsIso8601Constraint,
     IsRfc2822Constraint,
     IsIso8601DurationConstraint,
+    NewsCategoryDomainIdValidConstraint,
   ],
 })
 export class ValidatorModule {}
