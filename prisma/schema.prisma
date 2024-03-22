@@ -28,6 +28,9 @@ model user {
   userAuthToken          userAuthToken[]
   userForgotPasswordCode userForgotPasswordCode[]
   domain                 domain[]
+  author                 author[]
+  publisher              publisher[]
+  video                  video[]
 
   @@index([email])
   @@index([phone])
@@ -151,50 +154,154 @@ model url {
   @@index([domainId, url, createdAt])
 }
 
+// "author": {
+// "@type": "Person",
+// "name": "Tên tác giả"
+// "url": "Tên tác giả"
+// },
+// "publisher": {
+// "@type": "Organization",
+// "name": "Tên tổ chức xuất bản",
+// "url": "Tên tác giả"
+// "logo": {
+// "@type": "ImageObject",
+// "url": "URL logo tổ chức"
+// }
+// },
+
+// "aggregateRating": {
+// "@type": "AggregateRating",
+// "ratingValue": "88",
+// "bestRating": "100",
+// "ratingCount": "20"
+// },
+
+// "review": [{
+// "@type": "Review",
+// "reviewRating": {
+// "@type": "Rating",
+// "ratingValue": "5"
+// },
+// "author": {
+// "@type": "Person",
+// "name": "John Doe"
+// }
+// },
+// {
+// "@type": "Review",
+// "reviewRating": {
+// "@type": "Rating",
+// "ratingValue": "1"
+// },
+// "author": {
+// "@type": "Person",
+// "name": "Jane Doe"
+// }
+// }],
+
+model author {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  url         String?
+  createdAt   DateTime @default(now())
+  userId      String
+  user        user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  news        news[]
+  page        page[]
+
+  @@index([userId, createdAt])
+}
+
+model publisher {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  url         String?
+  createdAt   DateTime @default(now())
+  userId      String
+  user        user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  news        news[]
+  page        page[]
+
+  @@index([userId, createdAt])
+}
+
+model video {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  thumbnail   String[]
+  file        String // Đường dẫn file
+  duration    String // hời lượng của video ở định dạng ISO 8601. Ví dụ: PT00H30M5S nghĩa là thời lượng bằng "ba mươi phút và năm giây".
+  totalWatch  Int      @default(0)
+  createdAt   DateTime @default(now())
+  userId      String
+  user        user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  news        news[]
+  page        page[]
+
+  @@index([userId, createdAt])
+}
+
 // nested set model
 model newsCategory {
-  id          String         @id @default(uuid())
+  id              String         @id @default(uuid())
   // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
-  url         String? // Đường dẫn truy cập
-  description String?
-  summary     String?
-  image       String?
-  title       String?
-  createdAt   DateTime       @default(now())
-  disabled    Boolean        @default(false)
-  domainId    String
-  domain      domain         @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  rootId      String? // Danh mục root, mỗi 1 root sẽ có left bằng 1
-  parentId    String? // Danh mục trực thuộc
-  parent      newsCategory?  @relation("newsCategoryToNewsCategory", fields: [parentId], references: [id])
-  children    newsCategory[] @relation("newsCategoryToNewsCategory")
-  left        Int            @default(1)
-  right       Int            @default(2)
-  news        news[]
+  url             String? // Đường dẫn truy cập
+  metaDescription String?
+  metaTitle       String?
+  metaImage       String?
+  summary         String?
+  image           String?
+  title           String?
+  createdAt       DateTime       @default(now())
+  disabled        Boolean        @default(false)
+  domainId        String
+  domain          domain         @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  rootId          String? // Danh mục root, mỗi 1 root sẽ có left bằng 1
+  parentId        String? // Danh mục trực thuộc
+  parent          newsCategory?  @relation("newsCategoryToNewsCategory", fields: [parentId], references: [id])
+  children        newsCategory[] @relation("newsCategoryToNewsCategory")
+  left            Int            @default(1)
+  right           Int            @default(2)
+  news            news[]
 
   // @@index([domainId, rootId]) // Tìm kiếm danh mục root với left = 1
-  @@index([domainId, rootId, right, left]) // Tìm kiếm các danh mục con
+  @@index([domainId, rootId, right, left, createdAt]) // Tìm kiếm các danh mục con
   @@index([domainId, parentId])
 }
 
 model news {
-  id          String        @id @default(uuid())
+  id              String        @id @default(uuid())
   // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
-  title       String
-  url         String? // Đường dẫn truy cập
-  description String
-  summary     String
-  image       String?
-  content     String
-  createdAt   DateTime      @default(now())
-  disabled    Boolean       @default(false)
-  domainId    String
-  domain      domain        @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  rootId      String? // Nếu thuộc danh mục con thì lấy rootId của danh mục con, nếu thuộc danh mục root thì lấy id của danh mục root
-  categoryId  String?
-  category    newsCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  left        Int           @default(0) // Lấy left và right của danh mục cha
-  right       Int           @default(0)
+  title           String
+  url             String? // Đường dẫn truy cập
+  metaDescription String?
+  metaTitle       String?
+  metaImage       String?
+  ratingValue     Int           @default(0)
+  bestRating      Int           @default(0)
+  ratingCount     Int           @default(0)
+  totalRead       Int           @default(0)
+  videoId         String?
+  video           video?        @relation(fields: [videoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  authorId        String?
+  author          author?       @relation(fields: [authorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  publisherId     String?
+  publisher       publisher?    @relation(fields: [publisherId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  summary         String
+  image           String?
+  content         String
+  createdAt       DateTime      @default(now())
+  disabled        Boolean       @default(false)
+  domainId        String
+  domain          domain        @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  rootId          String? // Nếu thuộc danh mục con thì lấy rootId của danh mục con, nếu thuộc danh mục root thì lấy id của danh mục root
+  categoryId      String?
+  category        newsCategory? @relation(fields: [categoryId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  left            Int           @default(0) // Lấy left và right của danh mục cha
+  right           Int           @default(0)
 
   @@index([domainId, rootId, right, left]) // Tìm kiếm các bài viết thuộc danh mục
   // @@index([rootId])
@@ -202,18 +309,30 @@ model news {
 }
 
 model page {
-  id          String   @id @default(uuid())
+  id              String     @id @default(uuid())
   // code        String? // Để truy vấn trực tiếp lấy nội dung ra content như trang home
-  image       String?
-  url         String? // Đường dẫn truy cập
-  title       String
-  description String
-  summary     String
-  content     String
-  createdAt   DateTime @default(now())
-  disabled    Boolean  @default(false)
-  domainId    String
-  domain      domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  image           String?
+  url             String? // Đường dẫn truy cập
+  title           String
+  metaDescription String?
+  metaTitle       String?
+  metaImage       String?
+  ratingValue     Int        @default(0)
+  bestRating      Int        @default(0)
+  ratingCount     Int        @default(0)
+  totalRead       Int        @default(0)
+  videoId         String?
+  video           video?     @relation(fields: [videoId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  authorId        String?
+  author          author?    @relation(fields: [authorId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  publisherId     String?
+  publisher       publisher? @relation(fields: [publisherId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  summary         String
+  content         String
+  createdAt       DateTime   @default(now())
+  disabled        Boolean    @default(false)
+  domainId        String
+  domain          domain     @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([domainId])
 }

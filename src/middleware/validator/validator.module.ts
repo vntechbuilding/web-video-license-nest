@@ -7,6 +7,10 @@ import { RecaptchaValidConstraint } from './recaptcha-valid';
 import { HttpModule } from '@nestjs/axios';
 import { UserCurrentPasswordValidConstraint } from './user/user-current-password.valid';
 import { NewsCategoryParentIdValidConstraint } from './news-category/news-category-parent-id.valid';
+import { AuthorIdValidConstraint } from './author/author-id.valid';
+import { PublisherIdValidConstraint } from './publisher/publisher-id.valid';
+import { HeadMetaImageValidConstraint } from './head-meta/head-meta-image.valid';
+import { ContentImageValidConstraint } from './content-image.valid';
 
 @Module({
   imports: [HttpModule],
@@ -15,6 +19,10 @@ import { NewsCategoryParentIdValidConstraint } from './news-category/news-catego
     UserPasswordLoginValidConstraint,
     UserCurrentPasswordValidConstraint,
     NewsCategoryParentIdValidConstraint,
+    AuthorIdValidConstraint,
+    HeadMetaImageValidConstraint,
+    ContentImageValidConstraint,
+    PublisherIdValidConstraint,
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,
@@ -24,6 +32,10 @@ import { NewsCategoryParentIdValidConstraint } from './news-category/news-catego
     UserPasswordLoginValidConstraint,
     UserCurrentPasswordValidConstraint,
     NewsCategoryParentIdValidConstraint,
+    AuthorIdValidConstraint,
+    PublisherIdValidConstraint,
+    HeadMetaImageValidConstraint,
+    ContentImageValidConstraint,
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,

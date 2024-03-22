@@ -24,6 +24,9 @@ export class AdminNewsCategoryService {
             },
           },
         },
+        orderBy: {
+          createdAt: 'asc',
+        },
       }),
     ).pipe(
       map((listCategory) => {
@@ -46,6 +49,37 @@ export class AdminNewsCategoryService {
               user: true,
             },
           },
+        },
+        orderBy: {
+          createdAt: 'asc',
+        },
+      }),
+    ).pipe(
+      map((listCategory) => {
+        return listCategory
+          .filter((category) => category.parentId === null)
+          .map((root) => this.findChild(root, listCategory));
+      }),
+    );
+  }
+
+  getCategoryUser(userId: string) {
+    return from(
+      this.prisma.newsCategory.findMany({
+        where: {
+          domain: {
+            userId: userId,
+          },
+        },
+        include: {
+          domain: {
+            include: {
+              user: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'asc',
         },
       }),
     ).pipe(

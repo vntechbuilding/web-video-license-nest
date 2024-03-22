@@ -4,6 +4,14 @@ import { newsCategory } from '@prisma/client';
 import { from, of, switchMap, tap, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AdminNewsCategoryUpdateDto } from '../../../admin/admin-news-category/dto/admin-news-category.update.dto';
+import { join } from 'path';
+import {
+  uploadContentImageDir,
+  uploadContentImageThumbnailDir,
+  uploadMetaImageDir,
+  uploadMetaImageThumbnailDir,
+} from '../../../utils/find-root-dir';
+import { unlinkSync } from 'fs';
 
 @Injectable()
 export class NewsCategoryNestedService {
@@ -32,6 +40,34 @@ export class NewsCategoryNestedService {
             .pipe(
               tap((listCategory) => {
                 const ids = listCategory.map((category) => category.id);
+                const metaImage = listCategory
+                  .map((category) => category.metaImage)
+                  .filter((img) => img);
+                const image = listCategory
+                  .map((category) => category.image)
+                  .filter((img) => img);
+                for (const img of metaImage) {
+                  const removeFile = join(uploadMetaImageDir, img);
+                  const removeThumbnailFile = join(
+                    uploadMetaImageThumbnailDir,
+                    img,
+                  );
+                  try {
+                    unlinkSync(removeFile);
+                    unlinkSync(removeThumbnailFile);
+                  } catch (e) {}
+                }
+                for (const img of image) {
+                  const removeFile = join(uploadContentImageDir, img);
+                  const removeThumbnailFile = join(
+                    uploadContentImageThumbnailDir,
+                    img,
+                  );
+                  try {
+                    unlinkSync(removeFile);
+                    unlinkSync(removeThumbnailFile);
+                  } catch (e) {}
+                }
                 // console.log(ids);
                 this.prisma.url
                   .deleteMany({
