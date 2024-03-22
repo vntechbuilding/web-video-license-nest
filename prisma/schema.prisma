@@ -227,15 +227,19 @@ model publisher {
   @@index([userId, createdAt])
 }
 
+// Hình ảnh 1x1: Kích thước hợp lý có thể là 90x90 hoặc 1080x1080 pixels.
+// Hình ảnh 4x3: Kích thước hợp lý có thể là 160x120 hoặc 1440x1080 pixels.
+// Hình ảnh 16x9: Kích thước hợp lý có thể là 160x90 hoặc 1920x1080 pixels. -> Youtube sử dụng tỷ lệ này
 model video {
   id          String   @id @default(uuid())
   name        String
   description String
-  thumbnail   String[]
+  thumbnail   String
   file        String // Đường dẫn file
-  duration    String // hời lượng của video ở định dạng ISO 8601. Ví dụ: PT00H30M5S nghĩa là thời lượng bằng "ba mươi phút và năm giây".
+  duration    String // thời lượng của video ở định dạng ISO 8601. Ví dụ: PT00H30M5S nghĩa là thời lượng bằng "ba mươi phút và năm giây".
   totalWatch  Int      @default(0)
   createdAt   DateTime @default(now())
+  uploadDate  DateTime @default(now())
   userId      String
   user        user     @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
   news        news[]

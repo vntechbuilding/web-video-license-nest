@@ -14,9 +14,10 @@ import { findRootDir } from './utils/find-root-dir';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
-  app.use(bodyParser.json({ limit: '500mb' }));
-  app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
+  app.use(bodyParser.json({ limit: '1gb' }));
+  app.use(bodyParser.urlencoded({ limit: '1gb', extended: true }));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   app.useGlobalPipes(
     new ValidationPipe({
       validateCustomDecorators: true,

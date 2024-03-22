@@ -28,7 +28,7 @@ export class HeadMetaImageValidConstraint
     if (!image) return true;
     const isValid = await Base64PngValid(image);
     if (!isValid.isValid) return false;
-    const [model, idProperty] = args.constraints;
+    const [model, idProperty, imageCol] = args.constraints;
     const idData = (args.object as any)[idProperty];
     let removeFile: any = false;
     let removeThumbnailFile: any = false;
@@ -40,17 +40,19 @@ export class HeadMetaImageValidConstraint
         },
       });
       if (!prismaData) return false;
-      if (prismaData.metaImage) {
-        removeFile = join(uploadMetaImageDir, prismaData.metaImage);
+      if (prismaData[imageCol]) {
+        removeFile = join(uploadMetaImageDir, prismaData[imageCol]);
         removeThumbnailFile = join(
           uploadMetaImageThumbnailDir,
-          prismaData.metaImage,
+          prismaData[imageCol],
         );
       }
     }
 
     const title =
-      (args.object as any)['title'] || (args.object as any)['metaTitle'];
+      (args.object as any)['title'] ||
+      (args.object as any)['metaTitle'] ||
+      (args.object as any)['name'];
 
     const fileName: string = ToSlug(title) + '-' + RandStr(5) + '.png';
     const filePath = join(uploadMetaImageDir, fileName);
@@ -67,7 +69,7 @@ export class HeadMetaImageValidConstraint
         background: { r: 255, g: 255, b: 255 },
       })
       .toFile(fileThumbnailPath);
-    args.object['metaImage'] = fileName;
+    args.object[imageCol] = fileName;
     if (idData && removeFile) {
       try {
         unlinkSync(removeFile);
@@ -87,6 +89,7 @@ export class HeadMetaImageValidConstraint
 export function HeadMetaImageValid<T extends ModelNameType>(
   model: T,
   idProperty: string,
+  imageCol: string = 'metaImage',
   validationOptions?: ValidationOptions,
 ) {
   return (object: NonNullable<unknown>, propertyName: string) => {
@@ -95,7 +98,7 @@ export function HeadMetaImageValid<T extends ModelNameType>(
       target: object.constructor,
       propertyName: propertyName,
       options: validationOptions,
-      constraints: [model, idProperty],
+      constraints: [model, idProperty, imageCol],
       validator: HeadMetaImageValidConstraint,
     });
   };

@@ -27,7 +27,7 @@ export class AdminNewsCategoryUpdateDto extends Mixin(
   readonly parentId?: string;
 
   @decorate(IsOptional())
-  @decorate(HeadMetaImageValid('newsCategory', 'categoryId'))
+  @decorate(HeadMetaImageValid('newsCategory', 'categoryId', 'metaImage'))
   readonly metaImage: string;
 
   @decorate(IsOptional())

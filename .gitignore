@@ -3,11 +3,14 @@
 /node_modules
 /build
 /tmp
+/tmp-video
 /postgres_logs
 /postgres_data
 /nginx-log
 /redis_data
 /test
+/assets/videos
+/assets/imagesgit reset HEAD~1
 
 # Logs
 logs

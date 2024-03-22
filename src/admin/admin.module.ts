@@ -6,9 +6,10 @@ import { AdminNewsCategoryModule } from './admin-news-category/admin-news-catego
 import { AdminDomainModule } from './admin-domain/admin-domain.module';
 import { AdminAuthorModule } from './admin-author/admin-author.module';
 import { AdminPublisherModule } from './admin-publisher/admin-publisher.module';
+import { AdminVideoModule } from './admin-video/admin-video.module';
 
 @Module({
-  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule],
+  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule, AdminVideoModule],
   controllers: [],
   providers: [],
 })

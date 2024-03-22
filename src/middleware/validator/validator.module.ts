@@ -11,6 +11,9 @@ import { AuthorIdValidConstraint } from './author/author-id.valid';
 import { PublisherIdValidConstraint } from './publisher/publisher-id.valid';
 import { HeadMetaImageValidConstraint } from './head-meta/head-meta-image.valid';
 import { ContentImageValidConstraint } from './content-image.valid';
+import { IsIso8601Constraint } from './is-iso-8601.validator';
+import { IsRfc2822Constraint } from './is-rfc-2822.validator';
+import { IsIso8601DurationConstraint } from './is-iso-8601-duration.validator';
 
 @Module({
   imports: [HttpModule],
@@ -26,6 +29,9 @@ import { ContentImageValidConstraint } from './content-image.valid';
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,
+    IsIso8601Constraint,
+    IsRfc2822Constraint,
+    IsIso8601DurationConstraint,
   ],
   exports: [
     AdminPasswordLoginValidConstraint,
@@ -39,6 +45,9 @@ import { ContentImageValidConstraint } from './content-image.valid';
     DBUniqueConstraint,
     DBValueExistsConstraint,
     RecaptchaValidConstraint,
+    IsIso8601Constraint,
+    IsRfc2822Constraint,
+    IsIso8601DurationConstraint,
   ],
 })
 export class ValidatorModule {}

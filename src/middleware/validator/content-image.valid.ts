@@ -53,7 +53,9 @@ export class ContentImageValidConstraint
     }
 
     const title =
-      (args.object as any)['title'] || (args.object as any)['metaTitle'];
+      (args.object as any)['title'] ||
+      (args.object as any)['metaTitle'] ||
+      (args.object as any)['name'];
 
     const fileName: string = ToSlug(title) + '-' + RandStr(5) + '.png';
     const filePath = join(uploadContentImageDir, fileName);
