@@ -123,9 +123,7 @@ export class PrismaService extends PrismaClient {
   findManyAndCount<T extends ModelNameType>(
     model: T,
     params?: {
-      take?: number;
-      skip?: number;
-      include?: any;
+      [key: string]: any;
     },
     where?: {},
   ): Observable<{ data: [any]; count: number }> {

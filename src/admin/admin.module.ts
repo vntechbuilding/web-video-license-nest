@@ -4,9 +4,11 @@ import { AdminCpModule } from './admin/admin-cp.module';
 import { UserModule } from './user/user.module';
 import { AdminNewsCategoryModule } from './admin-news-category/admin-news-category.module';
 import { AdminDomainModule } from './admin-domain/admin-domain.module';
+import { AdminAuthorModule } from './admin-author/admin-author.module';
+import { AdminPublisherModule } from './admin-publisher/admin-publisher.module';
 
 @Module({
-  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule],
+  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule],
   controllers: [],
   providers: [],
 })
