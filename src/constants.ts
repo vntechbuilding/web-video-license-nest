@@ -4,6 +4,10 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 export const rootDir = findRootDir();
 export const profilesFolder = join(rootDir, 'profiles');
 export const tmpFolder = join(rootDir, 'tmp');
+export const assetsDir = join(rootDir, 'assets');
+export const templateAssetsDir = join(assetsDir, 'templates');
+export const templateTmpFolder = join(rootDir, 'tmp-template');
+export const templateFolder = join(rootDir, 'templates');
 export const tmpVideoFolder = join(rootDir, 'tmp-video');
 export const videoFolder = join(rootDir, 'assets/videos');
 export const multerGlobalOptions: MulterOptions = {

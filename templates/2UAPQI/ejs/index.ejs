@@ -1,0 +1,8 @@
+<ul>
+    <%  if(news) { %>
+        <% news.forEach(function(item) { %>
+            <li><%= item.title %> / <%= item.id%></li>
+        <% }) %>
+    <% } %>
+</ul>
+ok

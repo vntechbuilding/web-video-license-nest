@@ -5,7 +5,7 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
-import { unlinkSync } from 'fs';
+import { rmSync, unlinkSync } from 'fs';
 import { Request } from 'express';
 
 @Injectable()
@@ -13,6 +13,7 @@ export class CleanupInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       tap(null, (exception) => {
+        // console.log('CleanupInterceptor', exception);
         if (exception) {
           const request: Request = context.switchToHttp().getRequest();
           if (request.file) {
@@ -28,7 +29,17 @@ export class CleanupInterceptor implements NestInterceptor {
               } catch (e) {}
             });
           }
+          const removeDir: string[] = (request as any).removeDir;
+          // console.log(removeDir);
+          if (removeDir && removeDir.length) {
+            removeDir.forEach((dir) => {
+              try {
+                rmSync(dir, { recursive: true });
+              } catch (e) {}
+            });
+          }
         }
+        return true;
       }),
     );
   }
