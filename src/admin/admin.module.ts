@@ -10,9 +10,10 @@ import { AdminVideoModule } from './admin-video/admin-video.module';
 import { AdminNewsModule } from './admin-news/admin-news.module';
 import { AdminPageModule } from './admin-page/admin-page.module';
 import { AdminMenuModule } from './admin-menu/admin-menu.module';
+import { AdminTemplateModule } from './admin-template/admin-template.module';
 
 @Module({
-  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule, AdminVideoModule, AdminNewsModule, AdminPageModule, AdminMenuModule],
+  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule, AdminVideoModule, AdminNewsModule, AdminPageModule, AdminMenuModule, AdminTemplateModule],
   controllers: [],
   providers: [],
 })

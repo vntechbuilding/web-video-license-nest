@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
 import { unlinkSync } from 'fs';
+import { Request } from 'express';
 
 @Injectable()
 export class CleanupInterceptor implements NestInterceptor {
@@ -13,12 +14,19 @@ export class CleanupInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap(null, (exception) => {
         if (exception) {
-          const request = context.switchToHttp().getRequest();
+          const request: Request = context.switchToHttp().getRequest();
           if (request.file) {
-            console.log(request.file);
+            // console.log(request.file);
             try {
               unlinkSync(request.file.path);
             } catch (e) {}
+          }
+          if (request.files && Array.isArray(request.files)) {
+            request.files.forEach((file) => {
+              try {
+                unlinkSync(file.path);
+              } catch (e) {}
+            });
           }
         }
       }),

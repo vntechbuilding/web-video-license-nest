@@ -4,6 +4,7 @@
 /build
 /tmp
 /tmp-video
+/tmp-template
 /postgres_logs
 /postgres_data
 /nginx-log

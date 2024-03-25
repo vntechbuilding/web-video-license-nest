@@ -392,6 +392,8 @@ model template {
   version      String
   templateData templateData[]
   domain       domain[]
+
+  @@index([createdAt])
 }
 
 enum templateType {

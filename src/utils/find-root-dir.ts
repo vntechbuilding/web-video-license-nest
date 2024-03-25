@@ -18,6 +18,7 @@ export function findRootDir(currentDir: string = __dirname): string {
 export const uploadImageDir = join(findRootDir(), 'assets', 'images');
 // 1200  x 675
 export const uploadMetaImageDir = join(uploadImageDir, '16x9');
+export const updateAutoImageDir = join(uploadImageDir, 'auto');
 export const uploadMetaImageThumbnailDir = join(
   uploadImageDir,
   '16x9',

@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as process from 'process';
 import * as bodyParser from 'body-parser';
+import * as compression from 'compression';
 import { useContainer } from 'class-validator';
 import {
   BadRequestException,
@@ -14,6 +15,7 @@ import { findRootDir } from './utils/find-root-dir';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.enableCors();
+  app.use(compression());
   app.use(bodyParser.json({ limit: '1gb' }));
   app.use(bodyParser.urlencoded({ limit: '1gb', extended: true }));
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
