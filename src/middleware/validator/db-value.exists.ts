@@ -18,7 +18,7 @@ export class DBValueExistsConstraint implements ValidatorConstraintInterface {
   async validate(value: any, validationArguments: ValidationArguments) {
     if (!value) return true;
     const [model, propertyName] = validationArguments.constraints;
-    // console.log('DBValueExistsConstraint', { model, propertyName });
+    // console.log('DBValueExistsConstraint', { model, propertyName, value });
     const checkModel = this.prisma[model] as any;
     try {
       if (checkModel) {

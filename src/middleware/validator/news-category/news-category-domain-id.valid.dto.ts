@@ -24,6 +24,10 @@ export class NewsCategoryDomainIdValidConstraint
   ) {
     const domainId = (validationArguments.object as any)['domainId'];
     if (!categoryId || !domainId) return false;
+    // console.trace('NewsCategoryDomainIdValidConstraint', {
+    //   categoryId,
+    //   domainId,
+    // });
     const category = await this.prisma.newsCategory.findUnique({
       where: {
         id: categoryId,

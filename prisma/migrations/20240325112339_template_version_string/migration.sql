@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "template" ALTER COLUMN "version" DROP DEFAULT,
+ALTER COLUMN "version" SET DATA TYPE TEXT;

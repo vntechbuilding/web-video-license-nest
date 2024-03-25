@@ -5,14 +5,8 @@ import { from, of, switchMap, zip } from 'rxjs';
 import { AdminNewsCreateDto } from './dto/admin-news.create.dto';
 import { AdminNewsEditDto } from './dto/admin-news.edit.dto';
 import { omit } from 'lodash';
-import { join } from 'path';
-import {
-  uploadMetaImageDir,
-  uploadMetaImageThumbnailDir,
-} from '../../utils/find-root-dir';
-import { news } from '@prisma/client';
-import { unlinkSync } from 'fs';
 import { map } from 'rxjs/operators';
+import { Delete16x9Image } from '../../utils/delete-16x9-image';
 
 @Injectable()
 export class AdminNewsService {
@@ -223,7 +217,7 @@ export class AdminNewsService {
     ).pipe(
       switchMap((oldNews) => {
         if (!oldNews) return of(false);
-        this.deleteNewsFile(oldNews);
+        Delete16x9Image(oldNews);
         return zip(
           this.prisma.news.delete({
             where: {
@@ -237,23 +231,5 @@ export class AdminNewsService {
         );
       }),
     );
-  }
-
-  deleteNewsFile(news: news) {
-    const imagePath = join(uploadMetaImageDir, news.image);
-    const imageThumbnailPath = join(uploadMetaImageThumbnailDir, news.image);
-    const metaImagePath = join(uploadMetaImageDir, news.metaImage);
-    const metaImageThumbnailPath = join(
-      uploadMetaImageThumbnailDir,
-      news.metaImage,
-    );
-    try {
-      unlinkSync(imagePath);
-      unlinkSync(imageThumbnailPath);
-    } catch (e) {}
-    try {
-      unlinkSync(metaImagePath);
-      unlinkSync(metaImageThumbnailPath);
-    } catch (e) {}
   }
 }

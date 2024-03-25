@@ -4,6 +4,27 @@ import { catchError, from, map, Observable, of, switchMap, zip } from 'rxjs';
 import { ToSlug } from '../../utils/to-slug';
 import { RandStr } from '../../utils/rand-str';
 export declare type ModelNameType = keyof typeof Prisma.ModelName;
+type WhereInput<T extends ModelNameType> = T extends 'page'
+  ? Prisma.pageWhereInput
+  : T extends 'user'
+    ? Prisma.userWhereInput
+    : T extends 'admin'
+      ? Prisma.adminWhereInput
+      : T extends 'domain'
+        ? Prisma.domainWhereInput
+        : T extends 'author'
+          ? Prisma.authorWhereInput
+          : T extends 'publisher'
+            ? Prisma.publisherWhereInput
+            : T extends 'news'
+              ? Prisma.newsWhereInput
+              : T extends 'newsCategory'
+                ? Prisma.newsCategoryWhereInput
+                : T extends 'video'
+                  ? Prisma.videoWhereInput
+                  : T extends 'page'
+                    ? Prisma.pageWhereInput
+                    : never;
 @Injectable()
 export class PrismaService extends PrismaClient {
   constructor() {
@@ -121,10 +142,10 @@ export class PrismaService extends PrismaClient {
 
   findManyAndCount<T extends ModelNameType>(
     model: T,
-    params?: {
+    params: {
       [key: string]: any;
-    },
-    where?: {},
+    } = {},
+    where?: WhereInput<T>,
   ): Observable<{ data: [any]; count: number }> {
     const modelInstance = this[model] as any;
     return from(

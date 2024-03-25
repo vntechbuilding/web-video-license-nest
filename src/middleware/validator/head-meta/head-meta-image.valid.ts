@@ -26,7 +26,7 @@ export class HeadMetaImageValidConstraint
   constructor(private prisma: PrismaService) {}
   async validate(image: string, args: ValidationArguments) {
     const [model, idProperty, imageCol] = args.constraints;
-    // console.log(imageCol, args.object);
+    // console.log(model, idProperty, imageCol, args.object);
     if (!image) {
       delete (args.object as any)[imageCol];
       return true;

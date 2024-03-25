@@ -1,13 +1,25 @@
 import { decorate, Mixin } from 'ts-mixer';
-import { IsNotEmpty, IsUrl } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsUrl, Matches } from 'class-validator';
 import { DBUnique } from '../../../middleware/validator/db-unique';
 import { DBValueExists } from '../../../middleware/validator/db-value.exists';
 import { DisabledDto } from '../../../middleware/dto/disabled.dto';
+import { Transform } from 'class-transformer';
 
 export class AdminDomainCreateDto extends Mixin(DisabledDto) {
   @decorate(IsNotEmpty({ message: 'Tên miền không được để trống' }))
   @decorate(
-    IsUrl({ require_protocol: true }, { message: 'Tên miền không hợp lệ' }),
+    Matches(/^[^\/]+\.[^\/]+$/, {
+      message: 'Tên miền không hợp lệ',
+    }),
+    // IsUrl({
+    //   require_protocol: false,
+    //   require_host: true,
+    //   require_port: false,
+    //   allow_fragments: false,
+    //   allow_query_components: false,
+    //   allow_protocol_relative_urls: false,
+    //   allow_trailing_dot: false,
+    // }),
   )
   @decorate(
     DBUnique('domain', 'domain', '', true, {
@@ -15,6 +27,15 @@ export class AdminDomainCreateDto extends Mixin(DisabledDto) {
     }),
   )
   readonly domain: string;
+
+  @decorate(IsNotEmpty())
+  @decorate(IsBoolean())
+  @decorate(
+    Transform(({ value }) => {
+      return [true, 'enabled', 'true', 1, '1'].indexOf(value) > -1;
+    }),
+  )
+  readonly https: boolean = false;
 
   @decorate(IsNotEmpty({ message: 'Tài khoản không hợp lệ' }))
   @decorate(

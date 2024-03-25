@@ -115,17 +115,22 @@ model adminAuthToken {
 }
 
 model domain {
-  id           String         @id @default(uuid())
-  domain       String         @unique
-  createdAt    DateTime       @default(now())
-  disabled     Boolean        @default(false)
-  userId       String
-  user         user           @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  url          url[]
-  newsCategory newsCategory[]
-  news         news[]
-  page         page[]
-  article      article[]
+  id             String           @id @default(uuid())
+  domain         String           @unique
+  https          Boolean          @default(true)
+  templateId     String?
+  template       template?        @relation(fields: [templateId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdAt      DateTime         @default(now())
+  disabled       Boolean          @default(false)
+  userId         String
+  user           user             @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  url            url[]
+  newsCategory   newsCategory[]
+  news           news[]
+  page           page[]
+  article        article[]
+  menu           menu[]
+  domainTemplate domainTemplate[]
 
   @@index([domain])
   @@index([userId, domain])
@@ -310,7 +315,8 @@ model news {
 
   @@index([domainId, rootId, right, left, createdAt]) // Tìm kiếm các bài viết thuộc danh mục
   // @@index([rootId])
-  @@index([domainId, categoryId])
+  @@index([domainId, categoryId, createdAt])
+  @@index([createdAt])
 }
 
 model page {
@@ -340,7 +346,8 @@ model page {
   domainId        String
   domain          domain     @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
-  @@index([domainId])
+  @@index([domainId, createdAt])
+  @@index([createdAt])
 }
 
 model article {
@@ -355,4 +362,86 @@ model article {
   domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([domainId])
+}
+
+model menu {
+  id        String   @id @default(uuid())
+  title     String // Tiêu đề
+  url       String?
+  text      String? // Chữ hiển thị
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  parentId  String?
+  parent    menu?    @relation("menuToMenu", fields: [parentId], references: [id])
+  children  menu[]   @relation("menuToMenu")
+  domainId  String
+  domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([domainId, sortOrder])
+}
+
+// Chứa thông tin các giao diện của website
+model template {
+  id           String         @id @default(uuid())
+  code         String // Chứa random string, để xác định folder chứa assets, js, css, lúc cập nhật sẽ xóa folder cũ và tạo folder mới -> clear cache
+  name         String
+  description  String
+  image        String
+  createdAt    DateTime       @default(now())
+  disabled     Boolean        @default(false)
+  version      String
+  templateData templateData[]
+  domain       domain[]
+}
+
+enum templateType {
+  DEFAULT
+  HOME
+  NEWS
+  PAGE
+  ARTICLE
+}
+
+enum dataType {
+  NEWS
+  NEWS_CATEGORY
+  PAGE
+  MENU
+  TEXT
+  SCRIPT
+  IMAGE
+  CONTENT
+}
+
+// Chứa danh sách các cấu hình mà giao diện cần
+// VD default thì cần: logo, favicon, header, footer, menu, sidebar, content, ...
+// Đối với những data cần config kèm theo như: news_category thì ngoài ID ra sẽ cần số lượng bài viết cần select
+//-> config: {total: 5}
+// Đối với logo cần width, height: -> config: {width: 100, height: 100}
+model templateData {
+  id           String       @id @default(uuid())
+  templateId   String
+  template     template     @relation(fields: [templateId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  templateType templateType
+  name         String
+  dataType     dataType
+  code         String
+  config       Json
+
+  @@unique([templateType, code])
+  @@index([templateId, templateType])
+}
+
+model domainTemplate {
+  id           String       @id @default(uuid())
+  domainId     String
+  domain       domain       @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  templateType templateType
+  code         String
+  // Đối với những data cần liên kết ID như news, news_category, page, menu thì cần liên kết tới nội dung
+  refId        String?
+  // Đối với image thì lưu đường dẫn image, còn lại là nội dung
+  content      String?
+
+  @@index([domainId, templateType])
 }

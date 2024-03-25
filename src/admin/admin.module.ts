@@ -8,9 +8,11 @@ import { AdminAuthorModule } from './admin-author/admin-author.module';
 import { AdminPublisherModule } from './admin-publisher/admin-publisher.module';
 import { AdminVideoModule } from './admin-video/admin-video.module';
 import { AdminNewsModule } from './admin-news/admin-news.module';
+import { AdminPageModule } from './admin-page/admin-page.module';
+import { AdminMenuModule } from './admin-menu/admin-menu.module';
 
 @Module({
-  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule, AdminVideoModule, AdminNewsModule],
+  imports: [AdminAuthModule, AdminCpModule, UserModule, AdminNewsCategoryModule, AdminDomainModule, AdminAuthorModule, AdminPublisherModule, AdminVideoModule, AdminNewsModule, AdminPageModule, AdminMenuModule],
   controllers: [],
   providers: [],
 })
