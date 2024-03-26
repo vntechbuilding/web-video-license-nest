@@ -388,13 +388,34 @@ model template {
   description  String
   image        String
   createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  updatedAt    DateTime       @default(now()) @updatedAt
   disabled     Boolean        @default(false)
   version      String
   templateData templateData[]
   domain       domain[]
 
   @@index([createdAt])
+}
+
+// Chứa danh sách các cấu hình mà giao diện cần
+// VD default thì cần: logo, favicon, header, footer, menu, sidebar, content, ...
+// Đối với những data cần config kèm theo như: news_category thì ngoài ID ra sẽ cần số lượng bài viết cần select
+//-> config: {total: 5}
+// Đối với logo cần width, height: -> config: {width: 100, height: 100}
+model templateData {
+  id           String       @id @default(uuid())
+  templateId   String
+  template     template     @relation(fields: [templateId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  templateType templateType
+  name         String
+  dataType     dataType
+  code         String
+  config       Json
+  sortOrder    Int          @default(0)
+
+  @@unique([templateId, templateType, code]) // Mỗi 1 template, và trên 1 loại trang chỉ có thể có 1 loại code
+  // @@index([templateId, templateType])
+  @@index([templateId, templateType, sortOrder])
 }
 
 enum templateType {
@@ -414,25 +435,6 @@ enum dataType {
   SCRIPT
   IMAGE
   CONTENT
-}
-
-// Chứa danh sách các cấu hình mà giao diện cần
-// VD default thì cần: logo, favicon, header, footer, menu, sidebar, content, ...
-// Đối với những data cần config kèm theo như: news_category thì ngoài ID ra sẽ cần số lượng bài viết cần select
-//-> config: {total: 5}
-// Đối với logo cần width, height: -> config: {width: 100, height: 100}
-model templateData {
-  id           String       @id @default(uuid())
-  templateId   String
-  template     template     @relation(fields: [templateId], references: [id], onDelete: Restrict, onUpdate: Cascade)
-  templateType templateType
-  name         String
-  dataType     dataType
-  code         String
-  config       Json
-
-  @@unique([templateType, code])
-  @@index([templateId, templateType])
 }
 
 model domainTemplate {
