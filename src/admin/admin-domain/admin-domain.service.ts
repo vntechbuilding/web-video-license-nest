@@ -14,6 +14,7 @@ export class AdminDomainService {
       take: pageQuery.perPage,
       include: {
         user: true,
+        template: true,
       },
     });
     // return this.prisma.domain.findMany({
@@ -29,6 +30,10 @@ export class AdminDomainService {
     return this.prisma.domain.findMany({
       where: {
         userId,
+      },
+      include: {
+        user: true,
+        template: true,
       },
     });
   }

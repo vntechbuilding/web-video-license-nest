@@ -4,8 +4,9 @@ import { DBUnique } from '../../../middleware/validator/db-unique';
 import { DBValueExists } from '../../../middleware/validator/db-value.exists';
 import { DisabledDto } from '../../../middleware/dto/disabled.dto';
 import { Transform } from 'class-transformer';
+import { TemplateIdDto } from '../../../middleware/dto/template-id.dto';
 
-export class AdminDomainCreateDto extends Mixin(DisabledDto) {
+export class AdminDomainCreateDto extends Mixin(DisabledDto, TemplateIdDto) {
   @decorate(IsNotEmpty({ message: 'Tên miền không được để trống' }))
   @decorate(
     Matches(/^[^\/]+\.[^\/]+$/, {
