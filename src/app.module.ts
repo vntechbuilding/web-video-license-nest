@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { NewsCategoryNestedService } from './middleware/services/news-category-nested/news-category-nested.service';
 import { SystemUrlService } from './middleware/services/system-url/system-url.service';
+import { DomainTemplateService } from './middleware/services/domain-template/domain-template.service';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { SystemUrlService } from './middleware/services/system-url/system-url.se
     AdminModule,
   ],
   controllers: [],
-  providers: [NewsCategoryNestedService, SystemUrlService],
+  providers: [NewsCategoryNestedService, SystemUrlService, DomainTemplateService],
 })
 export class AppModule {}

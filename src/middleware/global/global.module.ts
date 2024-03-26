@@ -13,12 +13,17 @@ import { AdminAuthService } from '../../admin/admin-auth/admin-auth.service';
 import { ApiV1AuthService } from '../../api/api-v1/api-v1-auth/api-v1-auth.service';
 import { UserService } from '../../admin/user/user.service';
 import { NewsCategoryNestedService } from '../services/news-category-nested/news-category-nested.service';
+import { DomainTemplateService } from '../services/domain-template/domain-template.service';
 
 export const globalConsumer = [SendUserForgotPasswordConsumer];
 export const globalServiceQueue = [UserService];
 export const globalGuard = [];
 export const globalAuthService = [ApiV1AuthService, AdminAuthService];
-export const globalService = [SesNodemailerService, NewsCategoryNestedService];
+export const globalService = [
+  SesNodemailerService,
+  NewsCategoryNestedService,
+  DomainTemplateService,
+];
 @Global()
 @Module({
   providers: [

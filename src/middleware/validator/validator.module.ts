@@ -16,6 +16,12 @@ import { IsRfc2822Constraint } from './is-rfc-2822.validator';
 import { IsIso8601DurationConstraint } from './is-iso-8601-duration.validator';
 import { NewsCategoryDomainIdValidConstraint } from './news-category/news-category-domain-id.valid.dto';
 import { ImageAutoValidConstraint } from './image-auto.valid';
+import { NewsDomainIdValidConstraint } from './news/news-domain-id.valid.dto';
+import { PageDomainIdValidConstraint } from './page/page-domain-id.valid.dto';
+import { MenuDomainIdValidConstraint } from './menu/menu-domain-id.valid.dto';
+import { DomainTemplateCodeTypeValidConstraint } from './domain-template/domain-template-code-type.valid.dto';
+import { IsValidJSONConstraint } from './is-valid-json';
+import { DomainTemplateImageValidConstraint } from './domain-template/domain-template-image.valid';
 
 @Module({
   imports: [HttpModule],
@@ -36,6 +42,12 @@ import { ImageAutoValidConstraint } from './image-auto.valid';
     IsIso8601DurationConstraint,
     NewsCategoryDomainIdValidConstraint,
     ImageAutoValidConstraint,
+    NewsDomainIdValidConstraint,
+    PageDomainIdValidConstraint,
+    MenuDomainIdValidConstraint,
+    DomainTemplateCodeTypeValidConstraint,
+    IsValidJSONConstraint,
+    DomainTemplateImageValidConstraint,
   ],
   exports: [
     AdminPasswordLoginValidConstraint,
@@ -54,6 +66,12 @@ import { ImageAutoValidConstraint } from './image-auto.valid';
     IsRfc2822Constraint,
     IsIso8601DurationConstraint,
     NewsCategoryDomainIdValidConstraint,
+    NewsDomainIdValidConstraint,
+    PageDomainIdValidConstraint,
+    MenuDomainIdValidConstraint,
+    DomainTemplateCodeTypeValidConstraint,
+    IsValidJSONConstraint,
+    DomainTemplateImageValidConstraint,
   ],
 })
 export class ValidatorModule {}

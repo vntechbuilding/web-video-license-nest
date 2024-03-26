@@ -18,6 +18,25 @@ export const TransformHtmlSanitize = () => {
     });
   });
 };
+
+export const AllowScriptTags = () => {
+  return Transform(({ value }) => {
+    return sanitizeHtml(value, {
+      allowedTags: ['script'],
+      allowedAttributes: {
+        script: [
+          'src',
+          'type',
+          'async',
+          'defer',
+          'crossorigin',
+          'integrity',
+          'charset',
+        ],
+      },
+    });
+  });
+};
 export const removeHtmlTags = () => {
   return Transform(({ value }) => {
     // console.trace('removeHtmlTags', value);

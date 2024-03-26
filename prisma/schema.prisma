@@ -378,6 +378,7 @@ model menu {
   domain    domain   @relation(fields: [domainId], references: [id], onDelete: Restrict, onUpdate: Cascade)
 
   @@index([domainId, sortOrder])
+  @@index([domainId, parentId])
 }
 
 // Chứa thông tin các giao diện của website
@@ -448,5 +449,6 @@ model domainTemplate {
   // Đối với image thì lưu đường dẫn image, còn lại là nội dung
   content      String?
 
+  @@unique([domainId, templateType, code])
   @@index([domainId, templateType])
 }

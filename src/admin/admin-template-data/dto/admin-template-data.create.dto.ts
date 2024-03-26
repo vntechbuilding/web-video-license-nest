@@ -1,37 +1,19 @@
 import { decorate, Mixin } from 'ts-mixer';
 import { TemplateIdDto } from '../../../middleware/dto/template-id.dto';
-import { IsEnum, IsJSON, IsNotEmpty } from 'class-validator';
-import { dataType, templateType } from '@prisma/client';
+import { IsJSON, IsNotEmpty } from 'class-validator';
 import { SortOrderDto } from '../../../middleware/dto/sortOrder.dto';
+import { TemplateTypeDto } from '../../../middleware/dto/template-type.dto';
+import { DataTypeDto } from '../../../middleware/dto/data-type.dto';
+import { Transform } from 'class-transformer';
+import { Prisma } from '@prisma/client';
+import { IsValidJSON } from '../../../middleware/validator/is-valid-json';
 
 export class AdminTemplateDataCreateDto extends Mixin(
   TemplateIdDto,
   SortOrderDto,
+  TemplateTypeDto,
+  DataTypeDto,
 ) {
-  @decorate(
-    IsNotEmpty({
-      message: 'Loại trang không được để trống',
-    }),
-  )
-  @decorate(
-    IsEnum(templateType, {
-      message: 'Loại trang phải nằm trong danh sách cho phép',
-    }),
-  )
-  readonly templateType: templateType;
-
-  @decorate(
-    IsNotEmpty({
-      message: 'Loại dữ liệu không được để trống',
-    }),
-  )
-  @decorate(
-    IsEnum(dataType, {
-      message: 'Loại dữ liệu phải nằm trong danh sách cho phép',
-    }),
-  )
-  readonly dataType: dataType;
-
   @decorate(
     IsNotEmpty({
       message: 'Tên không được để trống',
@@ -52,9 +34,21 @@ export class AdminTemplateDataCreateDto extends Mixin(
     }),
   )
   @decorate(
-    IsJSON({
+    Transform(({ value }) => {
+      try {
+        if (typeof value === 'string') {
+          return JSON.parse(value);
+        }
+        return value;
+      } catch (e) {
+        return null;
+      }
+    }),
+  )
+  @decorate(
+    IsValidJSON({
       message: 'Config phải là một chuỗi JSON hợp lệ',
     }),
   )
-  readonly config: string;
+  readonly config: Prisma.JsonValue;
 }
