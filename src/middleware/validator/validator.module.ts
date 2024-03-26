@@ -22,6 +22,7 @@ import { MenuDomainIdValidConstraint } from './menu/menu-domain-id.valid.dto';
 import { DomainTemplateCodeTypeValidConstraint } from './domain-template/domain-template-code-type.valid.dto';
 import { IsValidJSONConstraint } from './is-valid-json';
 import { DomainTemplateImageValidConstraint } from './domain-template/domain-template-image.valid';
+import { DomainFaviconsValidConstraint } from './domain-favicons.valid';
 
 @Module({
   imports: [HttpModule],
@@ -48,6 +49,7 @@ import { DomainTemplateImageValidConstraint } from './domain-template/domain-tem
     DomainTemplateCodeTypeValidConstraint,
     IsValidJSONConstraint,
     DomainTemplateImageValidConstraint,
+    DomainFaviconsValidConstraint,
   ],
   exports: [
     AdminPasswordLoginValidConstraint,
@@ -72,6 +74,7 @@ import { DomainTemplateImageValidConstraint } from './domain-template/domain-tem
     DomainTemplateCodeTypeValidConstraint,
     IsValidJSONConstraint,
     DomainTemplateImageValidConstraint,
+    DomainFaviconsValidConstraint,
   ],
 })
 export class ValidatorModule {}

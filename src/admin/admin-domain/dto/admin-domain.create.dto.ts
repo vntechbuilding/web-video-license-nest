@@ -1,5 +1,5 @@
 import { decorate, Mixin } from 'ts-mixer';
-import { IsBoolean, IsNotEmpty, IsUrl, Matches } from 'class-validator';
+import { IsBoolean, IsNotEmpty, Matches } from 'class-validator';
 import { DBUnique } from '../../../middleware/validator/db-unique';
 import { DBValueExists } from '../../../middleware/validator/db-value.exists';
 import { DisabledDto } from '../../../middleware/dto/disabled.dto';

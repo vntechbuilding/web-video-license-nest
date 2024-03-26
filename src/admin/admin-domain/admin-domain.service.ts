@@ -3,6 +3,7 @@ import { PrismaService } from '../../middleware/prisma/prisma.service';
 import { AdminDomainCreateDto } from './dto/admin-domain.create.dto';
 import { AdminDomainUpdateDto } from './dto/admin-domain.update.dto';
 import { PageDto } from '../../middleware/dto/page.dto';
+import { AdminDomainFaviconDto } from './dto/admin-domain-favicon.dto';
 
 @Injectable()
 export class AdminDomainService {
@@ -43,7 +44,16 @@ export class AdminDomainService {
       data: createData,
     });
   }
-
+  updateDomainFavicon(updateData: AdminDomainFaviconDto) {
+    return this.prisma.domain.update({
+      where: {
+        id: updateData.domainId,
+      },
+      data: {
+        favicons: updateData.favicon,
+      },
+    });
+  }
   updateDomain(updateData: AdminDomainUpdateDto) {
     return this.prisma.domain.update({
       where: {

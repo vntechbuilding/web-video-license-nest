@@ -4,9 +4,11 @@ import { templateType, domain, templateData } from '@prisma/client';
 import { from, Observable, of, switchMap, zip } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Prisma } from '.prisma/client';
+import { BuildMenuTree } from '../../../utils/build-menu-tree';
 export declare type domainTemplateConfigItem = templateData & {
   refId: string;
   content: any;
+  listData?: Array<any>;
 };
 export declare type domainTemplateConfigType = {
   [code: string]: domainTemplateConfigItem;
@@ -194,16 +196,65 @@ export class DomainTemplateService {
         }),
       )
       .pipe(
-        switchMap((config) => {
+        switchMap((config: domainTemplateConfigType) => {
           if (config) {
-          } else {
+            return new Promise<domainTemplateConfigType>((resolve) => {
+              (async () => {
+                const configKeys = Object.keys(config);
+                for (const key of configKeys) {
+                  const configData = config[key];
+                  if (
+                    configData.dataType === 'NEWS_CATEGORY' &&
+                    configData.content.id &&
+                    typeof configData.config === 'object' &&
+                    typeof configData.config['take'] === 'number' &&
+                    configData.config['take'] > 0
+                  ) {
+                    configData.listData = await this.prisma.news.findMany({
+                      take: configData.config['take'],
+                      orderBy: {
+                        createdAt: 'desc',
+                      },
+                      include: {
+                        author: true,
+                        video: true,
+                        publisher: true,
+                      },
+                      where: {
+                        domainId: configData.content.domainId,
+                        rootId: configData.content.rootId,
+                        right: {
+                          lte: configData.content.right,
+                        },
+                        left: {
+                          gte: configData.content.left,
+                        },
+                      },
+                    });
+                  } else if (
+                    configData.dataType === 'MENU' &&
+                    configData.content.id
+                  ) {
+                    const domainMenu = await this.prisma.menu.findMany({
+                      where: {
+                        domainId: configData.content.domainId,
+                      },
+                    });
+                    // console.log(domainMenu);
+                    configData.listData = BuildMenuTree(
+                      domainMenu,
+                      configData.refId,
+                    );
+                  }
+                }
+                resolve(config);
+              })();
+            });
           }
           return of(config);
         }),
       );
   }
 
-  // getListMenu() {
-  //   return switchMap(())
-  // }
+  // getListMenu(newsCategory: domainTemplateConfigItem) {}
 }

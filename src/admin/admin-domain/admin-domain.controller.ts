@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -14,6 +15,7 @@ import { PageDto } from '../../middleware/dto/page.dto';
 import { AdminDomainCreateDto } from './dto/admin-domain.create.dto';
 import { AdminDomainUpdateDto } from './dto/admin-domain.update.dto';
 import { UserIdDto } from '../../middleware/dto/user-id.dto';
+import { AdminDomainFaviconDto } from './dto/admin-domain-favicon.dto';
 
 @Controller('api/admin/domain')
 @UseGuards(AdminV2Guard)
@@ -33,6 +35,11 @@ export class AdminDomainController {
   @Post()
   createDomain(@Body() createData: AdminDomainCreateDto) {
     return this.adminDomainService.createDomain(createData);
+  }
+
+  @Patch('favicon')
+  updateDomainFavicon(@Body() updateData: AdminDomainFaviconDto) {
+    return this.adminDomainService.updateDomainFavicon(updateData);
   }
 
   @Put()

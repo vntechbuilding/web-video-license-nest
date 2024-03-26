@@ -117,6 +117,7 @@ model adminAuthToken {
 model domain {
   id             String           @id @default(uuid())
   domain         String           @unique
+  favicons       String? // HTML favicon
   https          Boolean          @default(true)
   templateId     String?
   template       template?        @relation(fields: [templateId], references: [id], onDelete: Restrict, onUpdate: Cascade)

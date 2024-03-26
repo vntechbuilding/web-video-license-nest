@@ -1,6 +1,7 @@
 export const BuildMenuTree = (
   menus: { parentId: string; id: string; children?: any[] }[],
   parentId: string = null,
+  level: number = 1,
 ): any[] => {
   const tree = [];
   let nodes = menus;
@@ -11,11 +12,11 @@ export const BuildMenuTree = (
 
   for (const node of nodes) {
     if (node.parentId === parentId) {
-      const children = BuildMenuTree(menus, node.id);
+      const children = BuildMenuTree(menus, node.id, level + 1);
       if (children.length) {
         node.children = children;
       }
-      tree.push(node);
+      tree.push({ ...node, level });
     }
   }
 

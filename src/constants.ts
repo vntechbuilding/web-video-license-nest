@@ -6,6 +6,7 @@ export const profilesFolder = join(rootDir, 'profiles');
 export const tmpFolder = join(rootDir, 'tmp');
 export const assetsDir = join(rootDir, 'assets');
 export const templateAssetsDir = join(assetsDir, 'templates');
+export const faviconsFolder = join(assetsDir, 'favicons');
 export const templateTmpFolder = join(rootDir, 'tmp-template');
 export const templateFolder = join(rootDir, 'templates');
 export const tmpVideoFolder = join(rootDir, 'tmp-video');
