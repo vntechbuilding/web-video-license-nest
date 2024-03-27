@@ -1,0 +1,71 @@
+<% if(news){ %>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "image": [
+            "<%-domainUrl%><%-uploadMetaImageUrl%><%-news['metaImage'] %>",
+                    "<%-domainUrl%><%-uploadMetaImageThumbnailUrl%><%-news['metaImage'] %>",
+                    "<%-domainUrl%><%-uploadMetaImageUrl%><%-news['image'] %>",
+                    "<%-domainUrl%><%-uploadMetaImageThumbnailUrl%><%-news['image'] %>"
+                ],
+                "datePublished": "<%-news['uploadDate2']%>",
+                    "interactionStatistic": {
+                    "@type": "InteractionCounter",
+                    "interactionType": { "@type": "ReadAction" },
+                    "userInteractionCount": <%= news.totalRead %>
+    },
+    <% if(news.author && news.author.name ) {%>
+    "author": [{
+        "@type": "Person",
+        "name": "<%=news.author.name%>",
+    <% if(news.author && news.author.url ) {%>
+    "url": "<%-news.author.url%>"
+    <% } %>
+    }],
+    <% } %>
+<% if(news.publisher && news.publisher.name ) {%>
+    "publisher": [{
+        "@type": "Organization",
+        "name": "<%=news.publisher.name%>",
+    <% if(news.publisher && news.publisher.url ) {%>
+    "url": "<%-news.publisher.url%>"
+    <% } %>
+    }],
+    <% } %>
+<% if (news.video && news.video.file ) {%>
+        "video": {
+            "@type": "VideoObject",
+            "name": "<%= news.video.name %>",
+                    "description": "<%= news.video.description %>",
+                    "thumbnailUrl": [
+                      "<%-domainUrl%><%-uploadMetaImageThumbnailUrl%><%-news.video.thumbnail %>",
+                      "<%-domainUrl%><%-uploadMetaImageUrl%><%-news.video.thumbnail %>"
+                    ],
+                    "uploadDate": "<%-news.video.uploadDate%>",
+                    "duration": "<%- news.video.duration %>",
+                    "embedUrl": "<%-domainUrl%><%- requestUrl %>",
+                    "contentUrl": "<%-domainUrl%><%- uploadVideoUrl + news.video.file %>",
+                    "interactionStatistic": {
+                    "@type": "InteractionCounter",
+                    "interactionType": { "@type": "WatchAction" },
+                    "userInteractionCount": <%= news.video.totalWatch %>
+        }
+      },
+    <%}%>
+    "headline": "<%= news.title %>"
+            }
+</script>
+<%
+if(news.breadCrumb){
+%>
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": <%- JSON.stringify(news.breadCrumb, null, 2) %>
+        }
+    </script>
+<%}}
+%>

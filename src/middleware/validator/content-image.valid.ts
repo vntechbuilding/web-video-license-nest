@@ -17,6 +17,7 @@ import { RandStr } from '../../utils/rand-str';
 import * as sharp from 'sharp';
 import { unlinkSync } from 'fs';
 import { Base64PngValid } from '../../utils/base64-png-valid';
+import { utimes } from 'fs/promises';
 
 @ValidatorConstraint({
   name: 'ContentImageValid',
@@ -73,6 +74,15 @@ export class ContentImageValidConstraint
       })
       .toFile(fileThumbnailPath);
     args.object['image'] = fileName;
+    const uploadDate =
+      (args.object as any)['uploadDate'] || new Date().toString();
+    const newModifiedTime = new Date(
+      new Date(uploadDate).getTime() -
+        Math.floor(Math.random() * 60 * 60 * 24 * 10 * 1000),
+    );
+    // console.log(newModifiedTime);
+    await utimes(fileThumbnailPath, newModifiedTime, newModifiedTime);
+    await utimes(filePath, newModifiedTime, newModifiedTime);
     if (idData && removeFile) {
       try {
         unlinkSync(removeFile);

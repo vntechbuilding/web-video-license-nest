@@ -23,6 +23,7 @@ import { DomainTemplateCodeTypeValidConstraint } from './domain-template/domain-
 import { IsValidJSONConstraint } from './is-valid-json';
 import { DomainTemplateImageValidConstraint } from './domain-template/domain-template-image.valid';
 import { DomainFaviconsValidConstraint } from './domain-favicons.valid';
+import { TransformHtmlConstraint } from './html/transform-html.validator';
 
 @Module({
   imports: [HttpModule],
@@ -50,6 +51,7 @@ import { DomainFaviconsValidConstraint } from './domain-favicons.valid';
     IsValidJSONConstraint,
     DomainTemplateImageValidConstraint,
     DomainFaviconsValidConstraint,
+    TransformHtmlConstraint,
   ],
   exports: [
     AdminPasswordLoginValidConstraint,
@@ -75,6 +77,7 @@ import { DomainFaviconsValidConstraint } from './domain-favicons.valid';
     IsValidJSONConstraint,
     DomainTemplateImageValidConstraint,
     DomainFaviconsValidConstraint,
+    TransformHtmlConstraint,
   ],
 })
 export class ValidatorModule {}

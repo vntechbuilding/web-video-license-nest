@@ -1,0 +1,17 @@
+<% if(news_slide && news_slide.listData && news_slide.listData.length){%>
+    <div class="news-slide-container">
+        <div class="container">
+            <!-- Set up your HTML -->
+            <div class="owl-carousel owl-theme news-owl-carousel">
+                <% video.listData.forEach(function(newsItem, newsIndex){
+                if(newsItem.video && newsItem.video.file){
+                %>
+                    <div class="item">
+                        <h5 class="title"><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h5>
+                        <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                    </div>
+                <% }}) %>
+            </div>
+        </div>
+    </div>
+<% } %>

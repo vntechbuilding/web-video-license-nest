@@ -10,7 +10,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { NotFoundExceptionFilter } from './middleware/filter';
-import { findRootDir } from './utils/find-root-dir';
+import { PrismaService } from './middleware/prisma/prisma.service';
+import { DomainTemplateService } from './middleware/services/domain-template/domain-template.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -42,8 +43,12 @@ async function bootstrap() {
       },
     }),
   );
-  app.useGlobalFilters(new NotFoundExceptionFilter(findRootDir()));
+  const prismaService = app.get(PrismaService);
+  const domainTemplateService = app.get(DomainTemplateService);
+  app.useGlobalFilters(
+    new NotFoundExceptionFilter(prismaService, domainTemplateService),
+  );
   await app.listen(process.env.SERVER_PORT);
   console.log('Server started at port', process.env.SERVER_PORT);
 }
-bootstrap();
+bootstrap().then();

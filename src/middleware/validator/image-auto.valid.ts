@@ -13,6 +13,7 @@ import { RandStr } from '../../utils/rand-str';
 import * as sharp from 'sharp';
 import { unlinkSync } from 'fs';
 import { updateAutoImageDir } from '../../utils/find-root-dir';
+import { utimes } from 'fs/promises';
 
 @ValidatorConstraint({ name: 'ImageAutoValid', async: true })
 export class ImageAutoValidConstraint implements ValidatorConstraintInterface {
@@ -54,6 +55,15 @@ export class ImageAutoValidConstraint implements ValidatorConstraintInterface {
         background: { r: 255, g: 255, b: 255 },
       })
       .toFile(filePath);
+
+    const uploadDate =
+      (args.object as any)['uploadDate'] || new Date().toString();
+    const newModifiedTime = new Date(
+      new Date(uploadDate).getTime() -
+        Math.floor(Math.random() * 60 * 60 * 24 * 10 * 1000),
+    );
+    // console.log(newModifiedTime);
+    await utimes(filePath, newModifiedTime, newModifiedTime);
 
     args.object[imageCol] = fileName;
     if (idData && removeFile) {

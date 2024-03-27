@@ -1,0 +1,29 @@
+<% if(video && video.listData && video.listData.length){%>
+    <div class="news-video-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-8 col-xl-9">
+                    <video controls width="100%"><source src="<%- uploadVideoUrl + video.listData[0].video.file %>" type="video/mp4">Your browser does not support the video tag.</video>
+                </div>
+                <div class="col-xs-12 col-md-4 col-xl-3">
+                    <ul class="list-video">
+                        <% video.listData.forEach(function(newsItem, newsIndex){
+                            if(newsItem.video && newsItem.video.file){
+                        %>
+                            <li video-url="<%- uploadVideoUrl + newsItem.video.file %>">
+                                <div class="row">
+                                    <div class="col-5">
+                                        <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                                    </div>
+                                    <div class="col-7">
+                                        <h5><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h5>
+                                    </div>
+                                </div>
+                            </li>
+                        <% }}) %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+<% } %>

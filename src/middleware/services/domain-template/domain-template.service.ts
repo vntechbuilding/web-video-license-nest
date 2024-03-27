@@ -129,12 +129,15 @@ export class DomainTemplateService {
         switchMap((config) => {
           if (config && Object.keys(config).length > 0) {
             const listTransactions: Prisma.PrismaPromise<any>[] = [];
-            const listRefId: { [refId: string]: domainTemplateConfigItem } = {};
+            const listRefId: { [refId: string]: domainTemplateConfigItem[] } =
+              {};
             for (const code in config) {
               const configItem = config[code];
               if (configItem.refId) {
                 if (configItem.dataType === 'NEWS') {
-                  listRefId[configItem.refId] = configItem;
+                  if (!listRefId[configItem.refId])
+                    listRefId[configItem.refId] = [];
+                  listRefId[configItem.refId].push(configItem);
                   listTransactions.push(
                     this.prisma.news.findUnique({
                       where: {
@@ -143,7 +146,14 @@ export class DomainTemplateService {
                     }),
                   );
                 } else if (configItem.dataType === 'NEWS_CATEGORY') {
-                  listRefId[configItem.refId] = configItem;
+                  // console.log({
+                  //   where: {
+                  //     id: configItem.refId,
+                  //   },
+                  // });
+                  if (!listRefId[configItem.refId])
+                    listRefId[configItem.refId] = [];
+                  listRefId[configItem.refId].push(configItem);
                   listTransactions.push(
                     this.prisma.newsCategory.findUnique({
                       where: {
@@ -152,7 +162,9 @@ export class DomainTemplateService {
                     }),
                   );
                 } else if (configItem.dataType === 'MENU') {
-                  listRefId[configItem.refId] = configItem;
+                  if (!listRefId[configItem.refId])
+                    listRefId[configItem.refId] = [];
+                  listRefId[configItem.refId].push(configItem);
                   listTransactions.push(
                     this.prisma.menu.findUnique({
                       where: {
@@ -161,7 +173,9 @@ export class DomainTemplateService {
                     }),
                   );
                 } else if (configItem.dataType === 'PAGE') {
-                  listRefId[configItem.refId] = configItem;
+                  if (!listRefId[configItem.refId])
+                    listRefId[configItem.refId] = [];
+                  listRefId[configItem.refId].push(configItem);
                   listTransactions.push(
                     this.prisma.page.findUnique({
                       where: {
@@ -179,8 +193,10 @@ export class DomainTemplateService {
                     if (listRefId[result.id]) {
                       //TODO tìm kiếm tin tức đối với NEWS_CATEGORY
                       //Tìm kiếm các menu con
-                      if (config[listRefId[result.id].code])
-                        config[listRefId[result.id].code].content = result;
+                      listRefId[result.id].forEach((configItemFor) => {
+                        if (config[configItemFor.code])
+                          config[configItemFor.code].content = result;
+                      });
                       // listRefId[result.id].content = result;
                     }
                   }
@@ -203,8 +219,11 @@ export class DomainTemplateService {
                 const configKeys = Object.keys(config);
                 for (const key of configKeys) {
                   const configData = config[key];
+                  // if (configData.dataType === 'NEWS_CATEGORY')
+                  //   console.log(configData);
                   if (
                     configData.dataType === 'NEWS_CATEGORY' &&
+                    configData.content &&
                     configData.content.id &&
                     typeof configData.config === 'object' &&
                     typeof configData.config['take'] === 'number' &&
@@ -233,6 +252,7 @@ export class DomainTemplateService {
                     });
                   } else if (
                     configData.dataType === 'MENU' &&
+                    configData.content &&
                     configData.content.id
                   ) {
                     const domainMenu = await this.prisma.menu.findMany({

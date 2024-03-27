@@ -21,6 +21,7 @@ import { VideoIdDto } from '../../middleware/dto/video-id.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Mp4MulterOptions } from '../../utils/mp4-multer-options';
 import { CleanupInterceptor } from '../../middleware/interceptors/cleanup-interceptor';
+import { utimes } from 'fs/promises';
 
 @Controller('api/admin/video')
 @UseGuards(AdminV2Guard)
@@ -48,6 +49,13 @@ export class AdminVideoController {
   ) {
     // console.log({ createData, file });
     // // return { createData, file };
+    const uploadDate = createData.uploadDate || new Date().toString();
+    const newModifiedTime = new Date(
+      new Date(uploadDate).getTime() -
+        Math.floor(Math.random() * 60 * 60 * 24 * 10 * 1000),
+    );
+    // console.log(newModifiedTime);
+    await utimes(file.path, newModifiedTime, newModifiedTime);
     return this.videoService.createVideo({
       ...createData,
       file: file.filename,

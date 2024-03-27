@@ -1,0 +1,16 @@
+<% if (news && news.breadCrumb) { %>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+        <% news.breadCrumb.forEach(function(breadcrumbItem){
+            if(breadcrumbItem.item){
+            %>
+                <li class="breadcrumb-item"><a href="<%= breadcrumbItem.item %>"><%= breadcrumbItem.name %></a></li>
+        <% }else{
+            %>
+                <li class="breadcrumb-item" aria-current="page"><%= breadcrumbItem.name %></li>
+        <%
+        }
+            })%>
+        </ol>
+    </nav>
+<% } %>

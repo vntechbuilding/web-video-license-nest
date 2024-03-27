@@ -48,7 +48,6 @@ export class DomainFaviconsValidConstraint
         const outputPath = join(domainFaviconsFolder, file.name);
         writeFileSync(outputPath, file.contents);
       });
-      console.log(faviconsResponse.html);
       validationArguments.object['favicon'] = faviconsResponse.html.join('\n');
       return true;
     } catch (e) {

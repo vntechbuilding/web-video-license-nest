@@ -1,0 +1,28 @@
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/" title="<%= DEFAULT && DEFAULT['meta_title'] && DEFAULT['meta_title']['content'] %>">
+            <img src="<%- defaultImageTemplateDir %><%- DEFAULT && DEFAULT['logo'] && DEFAULT['logo']['content'] %>" alt="">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <% if(DEFAULT['menu'] && DEFAULT['menu']['listData'] && DEFAULT['menu']['listData'].length) {%>
+                    <% DEFAULT['menu']['listData'].forEach(function(item) { %>
+                        <li class="nav-item <%= item.children && item.children.length > 0 && 'dropdown'%>">
+                            <a class="nav-link <%= item.children && item.children.length > 0 && 'dropdown-toggle'%>" href="<%- item.url %>" title="<%- item.title %>" <%- item.children && item.children.length > 0 && 'role="button" data-bs-toggle="dropdown" aria-expanded="false"'%>><%- item.text %></a>
+                            <% if(item.children && item.children.length > 0) { %>
+                                <ul class="dropdown-menu">
+                                    <% item.children.forEach(function(itemLevelOne) { %>
+                                        <li><a class="dropdown-item" href="<%- itemLevelOne.url %>" title="<%= itemLevelOne.title %>"><%= itemLevelOne.text %></a></li>
+                                    <% }); %>
+                                </ul>
+                            <% } %>
+                        </li>
+                    <% }); %>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>

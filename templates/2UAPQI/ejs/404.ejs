@@ -1,0 +1,17 @@
+<%- include('include/header') %>
+<div class="error-404-container">
+    <div class="container">
+        <div id="notfound">
+            <div class="notfound">
+                <h1>oops!</h1>
+                <h2>Error 404 : Page Not Found</h2>
+                <p>Sorry but the page you are looking for does not exist, have been removed. name changed or is temporarily unavailable</p>
+                <a href="/" title="<%= DEFAULT && DEFAULT['meta_title'] && DEFAULT['meta_title']['content'] %>">go back</a>
+                <div class="notfound-social">
+                    <%- include('include/a-socials') %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include('include/footer') %>

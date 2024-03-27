@@ -2,7 +2,7 @@ import { decorate, Mixin } from 'ts-mixer';
 import { AdminDomainTemplateCreateDto } from './admin-domain-template.create.dto';
 import { IsNotEmpty } from 'class-validator';
 import { DomainTemplateCodeTypeValid } from '../../../middleware/validator/domain-template/domain-template-code-type.valid.dto';
-import { TransformHtmlSanitize } from '../../../utils/transforms/transform-html-sanitize';
+import { TransformHtml } from '../../../middleware/validator/html/transform-html.validator';
 
 export class AdminDomainTemplateContentCreateDto extends Mixin(
   AdminDomainTemplateCreateDto,
@@ -20,6 +20,6 @@ export class AdminDomainTemplateContentCreateDto extends Mixin(
       message: 'Dữ liệu không được để trống',
     }),
   )
-  @decorate(TransformHtmlSanitize())
+  @decorate(TransformHtml())
   readonly content: string;
 }

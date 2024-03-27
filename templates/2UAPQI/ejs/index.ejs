@@ -1,8 +1,5 @@
-<ul>
-    <%  if(news) { %>
-        <% news.forEach(function(item) { %>
-            <li><%= item.title %> / <%= item.id%></li>
-        <% }) %>
-    <% } %>
-</ul>
-ok
+<%- include('include/header') %>
+<%- include('news/news_slide') %>
+<%- include('news/hot_news') %>
+<%- include('news/video') %>
+<%- include('include/footer') %>

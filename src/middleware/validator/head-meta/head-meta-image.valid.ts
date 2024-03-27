@@ -17,6 +17,7 @@ import * as sharp from 'sharp';
 import { ModelNameType, PrismaService } from '../../prisma/prisma.service';
 import { unlinkSync } from 'fs';
 import { Base64PngValid } from '../../../utils/base64-png-valid';
+import { utimes } from 'fs/promises';
 
 @ValidatorConstraint({ name: 'HeadMetaImageValid', async: true })
 @Injectable()
@@ -73,6 +74,16 @@ export class HeadMetaImageValidConstraint
         background: { r: 255, g: 255, b: 255 },
       })
       .toFile(fileThumbnailPath);
+
+    const uploadDate =
+      (args.object as any)['uploadDate'] || new Date().toString();
+    const newModifiedTime = new Date(
+      new Date(uploadDate).getTime() -
+        Math.floor(Math.random() * 60 * 60 * 24 * 10 * 1000),
+    );
+    // console.log(newModifiedTime);
+    await utimes(fileThumbnailPath, newModifiedTime, newModifiedTime);
+    await utimes(filePath, newModifiedTime, newModifiedTime);
     args.object[imageCol] = fileName;
     if (idData && removeFile) {
       try {

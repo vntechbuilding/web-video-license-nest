@@ -1,0 +1,49 @@
+<% if(news_hot && news_hot.listData && news_hot.listData.length){%>
+<div class="hot-news-container">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-7 col-xl-4">
+                <ul class="hot-news-left">
+                    <% news_hot.listData.forEach(function(newsItem, newsIndex){
+                        if(newsIndex <= 4){
+                    %>
+                        <li>
+                            <span class="row">
+                                <span class="col-4">
+                                    <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                                </span>
+                                <span class="col-8">
+                                    <h4><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h4>
+                                </span>
+                            </span>
+                        </li>
+                    <% }}) %>
+                </ul>
+            </div>
+            <div class="col-xs-12 col-md-5 col-xl-5">
+                <% if(news_hot.listData[5]){ %>
+                    <div class="hot-news-center">
+                        <a href="/<%- news_hot.listData[5].url %>" title="<%= news_hot.listData[5].metaTitle %>">
+                            <img src="<%- uploadMetaImageThumbnailUrl + news_hot.listData[5].image %>" alt="<%= news_hot.listData[5].metaTitle %>">
+                        </a>
+                        <h1><a href="/<%- news_hot.listData[5].url %>" title="<%= news_hot.listData[5].metaTitle %>"><%- news_hot.listData[5].title %></a></h1>
+                        <h2><%- news_hot.listData[5].summary %></h2>
+                    </div>
+                <% } %>
+            </div>
+            <div class="col-xs-12 col-md-12 col-xl-3">
+                <ul class="list-news-container news-two">
+                <% news_hot.listData.forEach(function(newsItem, newsIndex){
+                if(newsIndex > 5){
+                %>
+                    <li class="news-item">
+                                    <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                                    <h3><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h3>
+                    </li>
+                <% }}) %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>

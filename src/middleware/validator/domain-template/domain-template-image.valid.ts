@@ -15,6 +15,7 @@ import * as sharp from 'sharp';
 import { Base64PngValid } from '../../../utils/base64-png-valid';
 import { unlinkSync } from 'fs';
 import { dataType } from '@prisma/client';
+import { utimes } from 'fs/promises';
 
 @ValidatorConstraint({ name: 'DomainTemplateImageValid', async: true })
 @Injectable()
@@ -61,6 +62,16 @@ export class DomainTemplateImageValidConstraint
         background: { r: 255, g: 255, b: 255 },
       })
       .toFile(filePath);
+
+    const uploadDate =
+      (validatorArguments.object as any)['uploadDate'] || new Date().toString();
+    const newModifiedTime = new Date(
+      new Date(uploadDate).getTime() -
+        Math.floor(Math.random() * 60 * 60 * 24 * 10 * 1000),
+    );
+    // console.log(newModifiedTime);
+    await utimes(filePath, newModifiedTime, newModifiedTime);
+
     const oldData = await this.prisma.domainTemplate.findUnique({
       where: {
         domainId_templateType_code: {

@@ -1,0 +1,16 @@
+<%- include('include/header') %>
+<div class="article-container">
+    <div class="container">
+        <h1 class="article-title">
+            <%= page.title %>
+        </h1>
+        <div class="article-date-published">
+            <%= page.uploadDate %>
+        </div>
+        <h2 class="article-summary"><%= page.summary %></h2>
+        <div class="article-body">
+            <%- page.content %>
+        </div>
+    </div>
+</div>
+<%- include('include/footer') %>

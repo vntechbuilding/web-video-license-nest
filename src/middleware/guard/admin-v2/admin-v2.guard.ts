@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { from, Observable, switchMap } from 'rxjs';
+import { catchError, from, Observable, switchMap } from 'rxjs';
 import { PrismaService } from '../../prisma/prisma.service';
 import { AdminAuthService } from '../../../admin/admin-auth/admin-auth.service';
 import { invalidTokenInformation } from '../../../utils/auth-utils/auth-utils';
@@ -36,11 +36,15 @@ export class AdminV2Guard implements CanActivate {
                 request.user = userData;
                 return true;
               }
-              invalidTokenInformation();
+              return invalidTokenInformation();
             }),
           );
         }
-        invalidTokenInformation();
+        return invalidTokenInformation();
+      }),
+      catchError((err) => {
+        // console.log(err);
+        return invalidTokenInformation();
       }),
     );
   }

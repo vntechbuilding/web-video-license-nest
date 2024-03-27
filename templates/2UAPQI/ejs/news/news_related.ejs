@@ -1,0 +1,28 @@
+<% if(newsRelated &&  newsRelated.length){%>
+<div class="article-container">
+    <div class="container">
+        <div class="article-title">
+            Có thể bạn quan tâm
+        </div>
+        <div class="article-body">
+            <div class="row list-news-container news-two">
+            <% newsRelated.forEach(function(newsItem, newsIndex){
+            %>
+                <div class="col-xs-12 col-sm-6 col-xl-4 news-item">
+                    <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                    <h4 class="title"><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h4>
+                    <p>
+                        <span class="createdAt"><%- newsItem.uploadDate %></span>
+                        <% if(newsItem.category && newsItem.category.url) { %>
+                            <span class="category">
+                                <a href="/<%-newsItem.category.url%>" title="<%= newsItem.category.title %>"><%= newsItem.category.title %></a>
+                            </span>
+                        <% } %>
+                    </p>
+                </div>
+            <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>

@@ -1,0 +1,1 @@
+$(document).ready(function(){$(".news-owl-carousel").each(function(e){$(this).owlCarousel({items:1,loop:!0,margin:10,autoHeight:!1,autoHeightClass:"owl-height",autoplay:!0,autoplayTimeout:5e3,autoplayHoverPause:!0})})});

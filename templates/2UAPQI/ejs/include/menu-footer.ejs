@@ -1,0 +1,23 @@
+<div class="menu-footer-container">
+    <div class="container">
+        <div class="text-center socials">
+            <%- include('a-socials') %>
+        </div>
+        <div class="row menu">
+            <% if(DEFAULT['menu_footer'] && DEFAULT['menu_footer']['listData'] && DEFAULT['menu_footer']['listData'].length) {%>
+                <% DEFAULT['menu_footer']['listData'].forEach(function(item) { %>
+                <div class="col">
+                    <h5><%- item.text %></h5>
+                    <% if(item.children && item.children.length > 0) { %>
+                        <ul>
+                            <% item.children.forEach(function(itemLevelOne) { %>
+                                <li><a href="<%- itemLevelOne.url %>" title="<%= itemLevelOne.title %>"><%= itemLevelOne.text %></a></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
+                </div>
+                <% }); %>
+            <% } %>
+        </div>
+    </div>
+</div>

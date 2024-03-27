@@ -1,0 +1,95 @@
+<% if (subCategory && subCategory.length){
+    subCategory.forEach(function(subItem){
+        %>
+        <div class="article-container">
+            <div class="container">
+                <h1 class="article-title">
+                    <%= subItem.title %>
+                </h1>
+                <div class="article-body">
+                    <% if(subItem.news && subItem.news.length ){ %>
+                    <div class="row">
+                        <div class="col col-xs-12 col-md-7 col-xl-8">
+                            <div class="hot-news-center text-center">
+                                <a href="/<%- subItem.news[0].url %>" title="<%= subItem.news[0].metaTitle %>">
+                                    <img src="<%- uploadMetaImageThumbnailUrl + subItem.news[0].image %>" alt="<%= subItem.news[0].metaTitle %>">
+                                </a>
+                                <h2><a href="/<%- subItem.news[0].url %>" title="<%= subItem.news[0].metaTitle %>"><%- subItem.news[0].title %></a></h2>
+                                <h3><%- subItem.news[0].summary %></h3>
+                            </div>
+                        </div>
+                        <div class="col col-xs-12 col-md-5 col-xl-4 list-news-container news-two">
+                            <%
+                                subItem.news.forEach(function(newsItem, newsIndex){
+                                    if(newsIndex === 1 || newsIndex === 2){
+
+                                %>
+                                    <div class="news-item">
+                                        <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                                        <h4 class="title"><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h4>
+                                        <p>
+                                            <span class="createdAt"><%- newsItem.uploadDate %></span>
+                                            <% if(newsItem.category && newsItem.category.url) { %>
+                                            <span class="category">
+                                <a href="/<%-newsItem.category.url%>" title="<%= newsItem.category.title %>"><%= newsItem.category.title %></a>
+                            </span>
+                                            <% } %>
+                                        </p>
+                                    </div>
+                                <%
+                                }
+                                })
+                            }%>
+                        </div>
+                    </div>
+                    <div class="row list-news-container news-two">
+
+                        <%
+                        subItem.news.forEach(function(newsItem, newsIndex){
+                        if(newsIndex > 2){
+
+                        %>
+                            <div class="news-item col-xs-6 col-xl-3">
+                                <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>"></a>
+                                <h4 class="title"><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h4>
+                            </div>
+                        <%
+                        }
+                        })
+                        %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%
+    })
+}%>
+<div class="article-container">
+    <div class="container">
+        <div class="article-title">
+            Tin mới
+        </div>
+        <div class="article-body list-news-container news-three">
+            <% if(listNews && listNews.length ){
+                listNews.forEach(function(newsItem){
+                    %>
+                <div class="news-item-summary news-item">
+                    <div class="row">
+                        <div class="col col-xs-5 col-md-4 col-xl-3">
+                            <a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>">
+                                <img src="<%- uploadMetaImageThumbnailUrl + newsItem.image %>" alt="<%= newsItem.metaTitle %>">
+                            </a>
+                        </div>
+                        <div class="col col-xs-7 col-md-8 col-xl-9">
+                            <h4 class="title"><a href="/<%- newsItem.url %>" title="<%= newsItem.metaTitle %>"><%- newsItem.title %></a></h4>
+                            <span class="createdAt"><%- newsItem.uploadDate %></span>
+                            <h5 class="summary"><%- newsItem.summary %></h5>
+                        </div>
+                    </div>
+                </div>
+                    <%
+                })
+            }%>
+        </div>
+    </div>
+</div>
